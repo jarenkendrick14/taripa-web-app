@@ -1,0 +1,168 @@
+<div class="safe-ride-page">
+
+  <!-- ── Auth gate ──────────────────────────────────────── -->
+  @if (!auth.isLoggedIn()) {
+    <header class="page-header container">
+      <a routerLink="/" class="back-btn" aria-label="Back">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 5l-7 7 7 7" />
+        </svg>
+      </a>
+      <div>
+        <h1 class="display-md">Safe Ride Share</h1>
+        <p class="page-subtitle">One-tap trip safety</p>
+      </div>
+    </header>
+    <div class="container auth-gate">
+      <div class="card auth-gate-card">
+        <svg class="icon icon-xl auth-gate-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        </svg>
+        <h2 class="display-sm">Sign in to use Safe Ride</h2>
+        <p class="auth-gate-desc">Safe Ride Share requires an account so your trusted contact info is saved and your trip logs are secure.</p>
+        <div class="auth-gate-btns">
+          <a routerLink="/login" class="btn btn-primary">Sign In</a>
+          <a routerLink="/register" class="btn btn-ghost">Create Account</a>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (auth.isLoggedIn()) {
+
+  <!-- ── Header ─────────────────────────────────────────── -->
+  <header class="page-header container">
+    <a routerLink="/" class="back-btn" aria-label="Back">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5M12 5l-7 7 7 7" />
+      </svg>
+    </a>
+    <div>
+      <h1 class="display-md">Safe Ride Share</h1>
+      <p class="page-subtitle">One-tap trip safety</p>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <p class="description">
+      Send your ride details — body number, origin, destination, and timestamp — to a trusted contact instantly.
+    </p>
+
+    <!-- ── Trusted Contact Card ────────────────────────── -->
+    <div class="card contact-card">
+      <p class="section-label">Trusted Contact</p>
+
+      @if (auth.user()?.trusted_contact_name && !editingContact) {
+        <div class="contact-display">
+          <span class="contact-icon">
+            <svg class="icon icon-lg" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </span>
+          <div class="contact-details">
+            <p class="contact-name">{{ auth.user()!.trusted_contact_name }}</p>
+            <p class="contact-phone mono">{{ auth.user()!.trusted_contact_phone }}</p>
+          </div>
+          <button class="btn btn-ghost btn-sm" (click)="editingContact = true">Edit</button>
+        </div>
+      }
+
+      @if (!auth.user()?.trusted_contact_name || editingContact) {
+        <div class="contact-form">
+          <div class="form-group">
+            <label class="form-label">Contact Name</label>
+            <input class="form-input" [(ngModel)]="contactName" placeholder="Mom, Partner, Friend..." />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone Number</label>
+            <input class="form-input" [(ngModel)]="contactPhone" placeholder="+63 9XX XXX XXXX" type="tel" />
+          </div>
+          <button class="btn btn-ghost btn-full" (click)="saveContact()" [disabled]="savingContact()">
+            @if (savingContact()) { <div class="spinner spinner-sm"></div> }
+            Save Contact
+          </button>
+        </div>
+      }
+    </div>
+
+    <!-- ── Ride Details Card ───────────────────────────── -->
+    <div class="card ride-card">
+      <p class="section-label">Ride Details</p>
+
+      <div class="form-group">
+        <label class="form-label">Tricycle Body Number</label>
+        <input class="form-input mono" [(ngModel)]="bodyNumber" placeholder="AC-1234" autocapitalize="characters" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Origin</label>
+        <div class="location-row">
+          <input class="form-input" [(ngModel)]="originName" placeholder="Where you boarded" />
+          <button class="gps-btn" (click)="getMyLocation()" [disabled]="gettingGps()">
+            @if (gettingGps()) {
+              <div class="spinner spinner-sm"></div>
+            } @else {
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3" /><path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
+              </svg>
+            }
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Destination</label>
+        <input class="form-input" [(ngModel)]="destName" placeholder="Where you're going" />
+      </div>
+    </div>
+
+    @if (error()) {
+      <div class="alert alert-error status-alert">
+        <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+          <line x1="12" y1="9" x2="12" y2="13" />
+          <line x1="12" y1="17" x2="12.01" y2="17" />
+        </svg>
+        <span>{{ error() }}</span>
+      </div>
+    }
+    @if (success()) {
+      <div class="alert alert-success status-alert">
+        <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M9 12l2 2 4-4" />
+          <circle cx="12" cy="12" r="9" />
+        </svg>
+        <span>{{ success() }}</span>
+      </div>
+    }
+
+    <!-- ── Send Button ─────────────────────────────────── -->
+    <button
+      class="btn btn-primary btn-full btn-lg send-btn"
+      (click)="shareSafeRide()"
+      [disabled]="sending() || !canShare">
+      @if (sending()) {
+        <div class="spinner"></div> Sending...
+      } @else {
+        <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        </svg>
+        <span>Send Safe Ride Alert</span>
+      }
+    </button>
+
+    <!-- ── Message Preview ────────────────────────────── -->
+    @if (canShare) {
+      <div class="preview-card">
+        <p class="section-label">Message Preview</p>
+        <pre class="preview-text">{{ previewMessage }}</pre>
+      </div>
+    }
+
+  </div>
+
+  } <!-- end @if isLoggedIn -->
+
+</div>

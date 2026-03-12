@@ -1,0 +1,224 @@
+.pasaway-page {
+  min-height: 100dvh;
+  background: var(--bg-void);
+  padding-bottom: 6rem;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-top: 1.25rem;
+  padding-bottom: 1rem;
+}
+
+.back-btn {
+  color: var(--text-secondary);
+  text-decoration: none;
+  display: flex;
+}
+
+.page-subtitle {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-top: 0.125rem;
+}
+
+/* ── Search ─────────────────────────────────────────────── */
+.info-text {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.875rem;
+}
+
+.search-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.body-input {
+  flex: 1;
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.spinner-sm {
+  width: 16px;
+  height: 16px;
+  border-width: 2px;
+}
+
+/* ── Results ────────────────────────────────────────────── */
+.results-section {
+  padding-top: 0.25rem;
+}
+
+.vehicle-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 0 0.25rem;
+  gap: 0.5rem;
+}
+
+.vehicle-number {
+  color: var(--text-primary);
+}
+
+.toda-name {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.stats-row {
+  display: flex;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.stat-card {
+  flex: 1;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.875rem 0.5rem;
+  text-align: center;
+}
+
+.stat-number {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  color: var(--taripa-red);
+}
+
+.stat-label {
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.flag-alert {
+  margin-bottom: 1rem;
+}
+
+/* ── Report items ───────────────────────────────────────── */
+.reports-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.report-item {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.875rem;
+}
+
+.report-route {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.report-fares {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.fare-pair {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.fare-label {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.fare-value {
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+
+.fare-overcharge { color: var(--taripa-red); }
+.fare-legal      { color: var(--taripa-green); }
+.fare-extra      { color: var(--taripa-amber); }
+
+.report-desc {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+.report-date {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: 0.375rem;
+}
+
+.empty-reports {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-align: center;
+  padding: 2rem;
+  color: var(--taripa-green);
+  font-size: 0.9rem;
+}
+
+.report-cta {
+  margin-top: 1rem;
+}
+
+/* ── Flagged list ───────────────────────────────────────── */
+.flagged-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.flagged-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-surface);
+  border: 1px solid rgba(192, 57, 43, 0.2);
+  border-radius: var(--radius-md);
+  padding: 0.875rem 1rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.2s;
+}
+
+.flagged-item:hover {
+  background: var(--bg-raised);
+}
+
+.body-no {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+button:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}

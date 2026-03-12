@@ -1,0 +1,555 @@
+.resibo-page {
+  min-height: 100dvh;
+  background: var(--bg-void);
+  padding-bottom: 6rem;
+}
+
+/* ── Header ────────────────────────────────────────────── */
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-top: 1.25rem;
+  padding-bottom: 1.25rem;
+}
+
+.back-btn {
+  color: var(--text-secondary);
+  text-decoration: none;
+  display: flex;
+}
+
+.page-subtitle {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-top: 0.125rem;
+}
+
+/* ── Form ───────────────────────────────────────────────── */
+.form-section {
+  padding-top: 0.5rem;
+}
+
+.passenger-tabs {
+  display: flex;
+  gap: 0.375rem;
+  flex-wrap: wrap;
+}
+
+.ptab {
+  padding: 0.5rem 0.875rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--bg-overlay);
+  border: 1px solid var(--border-medium);
+  color: var(--text-secondary);
+  transition: all 0.2s;
+}
+
+.ptab.active {
+  background: var(--taripa-red);
+  color: #fff;
+  border-color: var(--taripa-red);
+}
+
+/* Passenger count note */
+.count-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  color: var(--taripa-amber);
+  margin-top: 0.5rem;
+  line-height: 1.4;
+}
+
+.count-note svg { flex-shrink: 0; margin-top: 1px; }
+
+/* Pakiao notice on receipt */
+.pakiao-notice {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  background: rgba(217, 119, 6, 0.08);
+  border: 1px solid rgba(217, 119, 6, 0.3);
+  border-radius: var(--radius-md);
+  padding: 0.875rem;
+  font-size: 0.8125rem;
+  color: var(--taripa-amber);
+}
+
+.pakiao-notice strong {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.25rem;
+}
+
+.pakiao-notice p {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.location-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.loc-placeholder { font-size: 0.8125rem; }
+
+/* Origin/dest colour dots */
+.loc-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.loc-dot-origin { background: #2563eb; }
+.loc-dot-dest   { background: var(--taripa-red); }
+
+.form-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* ── Inline location search ─────────────────────────────── */
+.loc-search-wrap {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+}
+
+.loc-search-input {
+  width: 100%;
+  padding: 0.625rem 2rem 0.625rem 0.75rem;
+  background: var(--bg-overlay);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.15s;
+}
+
+.loc-search-input::placeholder { color: var(--text-muted); }
+
+.loc-search-input:focus {
+  border-color: var(--taripa-red);
+  background: var(--bg-surface);
+}
+
+.loc-search-wrap.confirmed .loc-search-input {
+  border-color: var(--taripa-green);
+  background: var(--bg-surface);
+}
+
+/* spinner / check icon inside the input */
+.loc-search-spinner,
+.loc-search-check {
+  position: absolute;
+  right: 0.625rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.loc-search-check { color: var(--taripa-green); }
+
+.loc-error {
+  margin: 0.25rem 0 0;
+  font-size: 0.775rem;
+  color: var(--taripa-red);
+  font-weight: 500;
+}
+
+.loc-search-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--border-medium);
+  border-top-color: var(--taripa-red);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin { to { transform: translateY(-50%) rotate(360deg); } }
+
+/* Dropdown results */
+.loc-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  z-index: 100;
+  overflow: hidden;
+}
+
+.loc-dropdown-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--border-subtle);
+  text-align: left;
+  font-size: 0.8125rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  line-height: 1.4;
+  transition: background 0.12s;
+}
+
+.loc-dropdown-item:last-child { border-bottom: none; }
+.loc-dropdown-item:hover { background: var(--bg-overlay); }
+
+/* GPS + map pick buttons */
+.gps-btn,
+.map-pick-btn {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  background: var(--bg-overlay);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+
+.gps-btn:hover,
+.map-pick-btn:hover {
+  border-color: var(--taripa-red);
+  color: var(--taripa-red);
+}
+
+.map-pick-btn.active {
+  background: var(--taripa-red);
+  border-color: var(--taripa-red);
+  color: #fff;
+}
+
+/* Inline map picker */
+.picker-wrap {
+  margin-top: 0.625rem;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.spinner-sm {
+  width: 16px;
+  height: 16px;
+}
+
+/* ── Live route preview (form step) ────────────────────── */
+.route-preview {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  margin-bottom: 0.25rem;
+}
+
+/* Google-Maps-style info bar below the map */
+.route-info-bar {
+  display: flex;
+  align-items: stretch;
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-subtle);
+  min-height: 60px;
+}
+
+.route-info-stat {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0.625rem 1rem;
+  min-width: 80px;
+  flex-shrink: 0;
+}
+
+.route-info-value {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--taripa-red);
+  line-height: 1.2;
+}
+
+.route-info-label {
+  font-size: 0.625rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.route-info-divider {
+  width: 1px;
+  background: var(--border-subtle);
+  margin: 0.625rem 0;
+}
+
+.route-info-legs {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0;
+  padding: 0.5rem 0.875rem;
+  min-width: 0;
+}
+
+.route-leg {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.leg-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.leg-dot-origin { background: #2563eb; }
+.leg-dot-dest   { background: var(--taripa-red); }
+
+.leg-name {
+  font-size: 0.8125rem;
+  color: var(--text-primary);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.route-leg-line {
+  width: 1px;
+  height: 14px;
+  background: var(--border-medium);
+  margin-left: 4px; /* center under 10px dot */
+}
+
+/* ── Receipt ────────────────────────────────────────────── */
+.receipt-section {
+  padding-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Route label row beneath the map */
+.route-label-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  padding: 0.25rem 0;
+}
+
+.route-point {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--text-primary);
+  font-weight: 500;
+  max-width: 40%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.route-arrow { color: var(--text-muted); flex-shrink: 0; }
+
+.route-dist {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.receipt-hero {
+  text-align: center;
+  padding: 1.5rem 0;
+  background: var(--bg-raised);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+}
+
+.receipt-passenger {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-transform: capitalize;
+  margin-top: 0.25rem;
+}
+
+.receipt-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--taripa-red);
+  margin-bottom: 0.25rem;
+}
+
+.receipt-route {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+.receipt-distance {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+
+.receipt-breakdown {
+  margin-bottom: 0.75rem;
+}
+
+.breakdown-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  font-size: 0.875rem;
+}
+
+.breakdown-total {
+  font-weight: 700;
+  color: var(--taripa-red);
+  font-size: 1rem;
+}
+
+.breakdown-subtotal {
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+  border-top: 1px dashed var(--border-subtle);
+  padding-top: 0.625rem;
+  margin-top: 0.125rem;
+}
+
+.breakdown-discount {
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+  padding-bottom: 0.25rem;
+}
+
+.discount-minus {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.citation-box {
+  display: flex;
+  gap: 0.875rem;
+  align-items: flex-start;
+  background: rgba(39, 174, 96, 0.08);
+  border: 1px solid rgba(39, 174, 96, 0.2);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.citation-icon {
+  display: flex;
+  align-items: center;
+  color: var(--taripa-green);
+  flex-shrink: 0;
+}
+
+.citation-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--taripa-green);
+  margin-bottom: 0.25rem;
+}
+
+.citation-text {
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.citation-sub {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* ── Tamang Sukli inline ──────────────────────────────── */
+.sukli-section {
+  margin-bottom: 0.75rem;
+}
+
+.sukli-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.sukli-item {
+  background: var(--bg-overlay);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  padding: 0.375rem 0.75rem;
+  display: flex;
+  gap: 0.375rem;
+  align-items: baseline;
+}
+
+.sukli-denom {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--taripa-amber);
+}
+
+.sukli-times {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+/* ── Actions ────────────────────────────────────────────── */
+.receipt-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+}
+
+.receipt-actions .btn {
+  flex: 1;
+  min-width: 120px;
+  font-size: 0.8125rem;
+  padding: 0.625rem 1rem;
+}
+
+.receipt-timestamp {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+button:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}

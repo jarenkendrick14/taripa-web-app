@@ -1,0 +1,176 @@
+<div class="pasaway-page">
+
+  <!-- ── Header ─────────────────────────────────────────── -->
+  <header class="page-header container">
+    <a routerLink="/" class="back-btn" aria-label="Back">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5M12 5l-7 7 7 7" />
+      </svg>
+    </a>
+    <div>
+      <h1 class="display-md">Pasaway DB</h1>
+      <p class="page-subtitle">Driver Overcharging History</p>
+    </div>
+  </header>
+
+  <!-- ── Search ─────────────────────────────────────────── -->
+  <div class="container search-section">
+    <p class="info-text">
+      Check a tricycle's body number before boarding to see its overcharging history.
+    </p>
+    <div class="search-row">
+      <input
+        class="form-input body-input"
+        [(ngModel)]="searchQuery"
+        (keyup.enter)="lookup()"
+        placeholder="Body No. (e.g. AC-1234)"
+        type="text"
+        autocapitalize="characters" />
+      <button class="btn btn-primary" (click)="lookup()" [disabled]="!searchQuery.trim() || loading()">
+        @if (loading()) { <div class="spinner spinner-sm"></div> } @else { Search }
+      </button>
+    </div>
+
+    @if (error()) {
+      <div class="alert alert-error">{{ error() }}</div>
+    }
+  </div>
+
+  <!-- ── Results ─────────────────────────────────────────── -->
+  @if (result()) {
+    <div class="container results-section">
+
+      <div class="vehicle-header">
+        <div class="vehicle-number display-md">{{ result()!.body_number }}</div>
+        @if (result()!.flagged) {
+          <span class="badge badge-danger">
+            <svg class="icon icon-xs" viewBox="0 0 24 24" aria-hidden="true">
+              <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+            FLAGGED
+          </span>
+        } @else if (result()!.report_count_30d > 0) {
+          <span class="badge badge-warning">
+            <svg class="icon icon-xs" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+              <line x1="12" y1="9" x2="12" y2="13" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+            Reports on file
+          </span>
+        } @else {
+          <span class="badge badge-success">
+            <svg class="icon icon-xs" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M9 12l2 2 4-4" />
+              <circle cx="12" cy="12" r="9" />
+            </svg>
+            No recent reports
+          </span>
+        }
+      </div>
+
+      @if (result()!.toda_name) {
+        <p class="toda-name">{{ result()!.toda_name }}</p>
+      }
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <span class="stat-number">{{ result()!.report_count_30d }}</span>
+          <span class="stat-label">Reports (30d)</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">{{ result()!.stats?.total_reports ?? 0 }}</span>
+          <span class="stat-label">Total</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">₱{{ (result()!.stats?.avg_overcharge ?? 0) | number:'1.0-0' }}</span>
+          <span class="stat-label">Avg Overcharge</span>
+        </div>
+      </div>
+
+      @if (result()!.flagged) {
+        <div class="alert alert-error flag-alert">
+          <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true">
+            <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
+          </svg>
+          <span>This vehicle has been <strong>automatically flagged</strong> for 5+ overcharging reports
+          in the past 30 days and included in the weekly PTRO enforcement report.</span>
+        </div>
+      }
+
+      <!-- Report list -->
+      @if (result()!.recent_reports.length > 0) {
+        <p class="section-label">Recent Reports</p>
+        <div class="reports-list">
+          @for (report of result()!.recent_reports; track report.id) {
+            <div class="report-item">
+              <div class="report-route">
+                <span>{{ report.origin_name ?? 'Unknown' }}</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+                <span>{{ report.destination_name ?? 'Unknown' }}</span>
+              </div>
+              <div class="report-fares">
+                <div class="fare-pair">
+                  <span class="fare-label">Charged</span>
+                  <span class="fare-value fare-overcharge mono">₱{{ report.reported_fare }}</span>
+                </div>
+                <div class="fare-pair">
+                  <span class="fare-label">Legal</span>
+                  <span class="fare-value fare-legal mono">₱{{ report.calculated_fare }}</span>
+                </div>
+                <div class="fare-pair">
+                  <span class="fare-label">Extra</span>
+                  <span class="fare-value fare-extra mono">+₱{{ report.overcharge_amount | number:'1.2-2' }}</span>
+                </div>
+              </div>
+              @if (report.description) {
+                <p class="report-desc">{{ report.description }}</p>
+              }
+              <p class="report-date">{{ report.reported_at | date:'MMM d, yyyy · h:mm a' }}</p>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="empty-reports">
+          <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M9 12l2 2 4-4" />
+            <circle cx="12" cy="12" r="9" />
+          </svg>
+          <span>No overcharging reports on file for this vehicle.</span>
+        </div>
+      }
+
+      <a routerLink="/report" class="btn btn-danger btn-full report-cta">Report This Driver</a>
+    </div>
+  }
+
+  <!-- ── Flagged vehicles list ───────────────────────────── -->
+  @if (!result() && flagged().length > 0) {
+    <div class="container">
+      <p class="section-label">
+        <svg class="icon icon-xs" viewBox="0 0 24 24" aria-hidden="true">
+          <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2" />
+          <line x1="12" y1="8" x2="12" y2="12" />
+          <line x1="12" y1="16" x2="12.01" y2="16" />
+        </svg>
+        Currently Flagged Vehicles
+      </p>
+      <div class="flagged-list">
+        @for (t of flagged(); track t.body_number) {
+          <button class="flagged-item" (click)="selectFlagged(t.body_number)">
+            <span class="body-no mono">{{ t.body_number }}</span>
+            <span class="badge badge-danger">{{ t.report_count_30d }} reports</span>
+          </button>
+        }
+      </div>
+    </div>
+  }
+
+</div>

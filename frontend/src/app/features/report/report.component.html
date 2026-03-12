@@ -1,0 +1,135 @@
+<div class="report-page">
+
+  <!-- ── Header ─────────────────────────────────────────── -->
+  <header class="page-header container">
+    <a routerLink="/" class="back-btn" aria-label="Back">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5M12 5l-7 7 7 7" />
+      </svg>
+    </a>
+    <div>
+      <h1 class="display-md">Report Driver</h1>
+      <p class="page-subtitle">Submit to PTRO</p>
+    </div>
+  </header>
+
+  <!-- ── Form ───────────────────────────────────────────── -->
+  @if (!submitted()) {
+    <div class="container form-section">
+
+      <div class="alert alert-info info-banner">
+        <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-2" />
+          <rect x="4" y="2" width="12" height="16" rx="2" ry="2" />
+          <line x1="8" y1="6" x2="12" y2="6" />
+          <line x1="8" y1="10" x2="12" y2="10" />
+        </svg>
+        <span>Reports are compiled into weekly summaries sent directly to the Angeles City Public Transport Regulatory Office.</span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="bodyNo">Tricycle Body Number *</label>
+        <input id="bodyNo" class="form-input mono" [(ngModel)]="bodyNumber"
+          placeholder="AC-1234" autocapitalize="characters" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="charged">Fare Charged by Driver (₱) *</label>
+        <input id="charged" class="form-input mono" type="number"
+          [(ngModel)]="reportedFare" placeholder="e.g. 60" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="legal">Legal Fare (₱) *</label>
+        <div class="fare-row">
+          <input id="legal" class="form-input mono" type="number"
+            [(ngModel)]="calculatedFare" placeholder="e.g. 35" />
+          <a routerLink="/resibo" class="btn btn-ghost calc-link">Calculate →</a>
+        </div>
+      </div>
+
+      @if (overchargeAmount > 0) {
+        <div class="overcharge-preview">
+          <span class="oc-label">Overcharge Amount</span>
+          <span class="oc-value mono">+₱{{ overchargeAmount | number:'1.2-2' }}</span>
+        </div>
+      }
+
+      <div class="form-group">
+        <label class="form-label" for="origin">Origin</label>
+        <input id="origin" class="form-input" [(ngModel)]="originName"
+          placeholder="Where you boarded" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="dest">Destination</label>
+        <input id="dest" class="form-input" [(ngModel)]="destName"
+          placeholder="Where you were going" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="pax">Passenger Count</label>
+        <input id="pax" class="form-input" type="number"
+          [(ngModel)]="passengerCount" min="1" max="5" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="desc">Description (optional)</label>
+        <textarea id="desc" class="form-input" [(ngModel)]="description" rows="3"
+          placeholder="What happened? Did the driver refuse change? Did they take a longer route?">
+        </textarea>
+      </div>
+
+      @if (error()) {
+        <div class="alert alert-error">{{ error() }}</div>
+      }
+
+      <button
+        class="btn btn-primary btn-full btn-lg"
+        (click)="submit()"
+        [disabled]="!canSubmit || submitting()">
+        @if (submitting()) {
+          <div class="spinner"></div> Submitting...
+        } @else {
+          <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+            <line x1="4" y1="22" x2="4" y2="15" />
+          </svg>
+          <span>Submit Report</span>
+        }
+      </button>
+
+    </div>
+  }
+
+  <!-- ── Success State ──────────────────────────────────── -->
+  @if (submitted()) {
+    <div class="container success-section">
+      <div class="success-icon">
+        <svg class="icon icon-xl" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M9 12l2 2 4-4" />
+          <circle cx="12" cy="12" r="9" />
+        </svg>
+      </div>
+      <h2 class="display-md">Report Submitted</h2>
+      <p class="success-sub">
+        Your report has been recorded and will be included in this week's
+        PTRO enforcement summary sent to Angeles City Hall.
+      </p>
+      @if (gpsValidated()) {
+        <span class="badge badge-success gps-badge">
+          <svg class="icon icon-xs" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M9 12l2 2 4-4" />
+            <circle cx="12" cy="12" r="9" />
+          </svg>
+          GPS Validated
+        </span>
+      }
+      <div class="success-actions">
+        <a routerLink="/pasaway" class="btn btn-ghost btn-full">View Driver History</a>
+        <a routerLink="/" class="btn btn-primary btn-full">Back to Home</a>
+      </div>
+    </div>
+  }
+
+</div>

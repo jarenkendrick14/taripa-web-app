@@ -1,0 +1,204 @@
+<div class="home-page">
+
+  <!-- ── Hero ──────────────────────────────────────────── -->
+  <header class="hero">
+    <div class="hero-inner container">
+
+      <!-- Left / mobile-centered: text -->
+      <div class="hero-content">
+        <span class="hero-eyebrow">
+          <svg class="icon icon-xs" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+            <circle cx="12" cy="10" r="3" />
+          </svg>
+          Tricycle Fares · Angeles City
+        </span>
+
+        <h1 class="hero-tagline">
+          Know the fare.<br/>
+          <span class="tagline-accent">Pay the fair.</span>
+        </h1>
+
+        <p class="hero-desc">
+          Exact legal tricycle fares, based on Ordinance No. 723. No driver sign-up needed.
+        </p>
+
+        <div class="hero-cta">
+          <a routerLink="/resibo" class="btn btn-primary btn-lg">
+            Calculate My Fare
+          </a>
+          <a routerLink="/pasaway" class="btn btn-ghost">
+            Check a Driver
+          </a>
+        </div>
+      </div>
+
+      <!-- Right (desktop only): mini stats + feature highlights -->
+      <div class="hero-aside">
+        <div class="hero-stat-card card">
+          <p class="hero-stat-label section-label">Why it matters</p>
+          <div class="hero-stats">
+            <div class="hero-stat">
+              <span class="hero-stat-value">84K</span>
+              <span class="hero-stat-desc">daily commuters in Angeles City</span>
+            </div>
+            <div class="hero-stat">
+              <span class="hero-stat-value">₱8K</span>
+              <span class="hero-stat-desc">avg. yearly loss per commuter</span>
+            </div>
+            <div class="hero-stat">
+              <span class="hero-stat-value">Zero</span>
+              <span class="hero-stat-desc">driver cooperation required</span>
+            </div>
+          </div>
+        </div>
+        <div class="hero-trust">
+          <span class="trust-item">
+            <svg class="icon icon-xs icon-accent" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            GPS-verified
+          </span>
+          <span class="trust-item">
+            <svg class="icon icon-xs icon-accent" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+            Ordinance-cited
+          </span>
+          <span class="trust-item">
+            <svg class="icon icon-xs icon-accent" viewBox="0 0 24 24"><path d="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z"/><path d="M8 2v16M16 6v16"/></svg>
+            Works offline
+          </span>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ── Features ──────────────────────────────────────── -->
+  <section class="features-section">
+    <div class="container">
+      <p class="section-label">Everything you need</p>
+      <div class="feature-grid">
+
+        <a routerLink="/resibo" class="feature-card feature-primary">
+          <span class="feature-icon-wrap">
+            <svg class="icon icon-lg" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+              <line x1="16" y1="13" x2="8" y2="13" />
+              <line x1="16" y1="17" x2="8" y2="17" />
+              <line x1="10" y1="9" x2="8" y2="9" />
+            </svg>
+          </span>
+          <div class="feature-body">
+            <h3 class="feature-title">Resibo</h3>
+            <p class="feature-desc">GPS fare calculator + digital legal receipt you can show the driver</p>
+          </div>
+          <svg class="feature-arrow icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
+
+        <a routerLink="/pasaway" class="feature-card">
+          <span class="feature-icon-wrap">
+            <svg class="icon icon-lg" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+          </span>
+          <div class="feature-body">
+            <h3 class="feature-title">Pasaway DB</h3>
+            <p class="feature-desc">Check a tricycle's overcharging history by body number before you board</p>
+          </div>
+          <svg class="feature-arrow icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
+
+        <a routerLink="/bantay-batas" class="feature-card">
+          <span class="feature-icon-wrap">
+            <svg class="icon icon-lg" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+              <line x1="12" y1="9" x2="12" y2="13" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+          </span>
+          <div class="feature-body">
+            <h3 class="feature-title">Bantay Batas</h3>
+            <p class="feature-desc">GPS-triggered alerts when you're near high-complaint terminals</p>
+          </div>
+          <svg class="feature-arrow icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
+
+        <a routerLink="/safe-ride" class="feature-card">
+          <span class="feature-icon-wrap">
+            <svg class="icon icon-lg" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+          </span>
+          <div class="feature-body">
+            <h3 class="feature-title">Safe Ride Share</h3>
+            <p class="feature-desc">One-tap: send your trip details and body number to a trusted contact</p>
+          </div>
+          <svg class="feature-arrow icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
+
+        <a routerLink="/tamang-sukli" class="feature-card">
+          <span class="feature-icon-wrap">
+            <svg class="icon icon-lg" viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
+              <line x1="1" y1="10" x2="23" y2="10" />
+              <line x1="6" y1="16" x2="10" y2="16" />
+            </svg>
+          </span>
+          <div class="feature-body">
+            <h3 class="feature-title">Tamang Sukli</h3>
+            <p class="feature-desc">Exact change calculator — eliminates the "no change" excuse</p>
+          </div>
+          <svg class="feature-arrow icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
+
+        <a routerLink="/report" class="feature-card feature-report">
+          <span class="feature-icon-wrap">
+            <svg class="icon icon-lg" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+              <line x1="4" y1="22" x2="4" y2="15" />
+            </svg>
+          </span>
+          <div class="feature-body">
+            <h3 class="feature-title">Report Driver</h3>
+            <p class="feature-desc">Submit directly to PTRO — compiled weekly for enforcement</p>
+          </div>
+          <svg class="feature-arrow icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Auth CTA ───────────────────────────────────────── -->
+  @if (!auth.isLoggedIn()) {
+    <section class="cta-section container">
+      <div class="cta-card">
+        <div class="cta-text-wrap">
+          <h3 class="display-sm">Join the community</h3>
+          <p class="cta-desc">Create a free account to submit overcharging reports and use Safe Ride Share.</p>
+        </div>
+        <div class="cta-buttons">
+          <a routerLink="/register" class="btn btn-primary">Create Account</a>
+          <a routerLink="/login" class="btn btn-ghost">Sign In</a>
+        </div>
+      </div>
+    </section>
+  }
+
+  <footer class="home-footer container">
+    <p>Built for Angeles City commuters · Ordinance No. 723, S-2024</p>
+  </footer>
+
+</div>

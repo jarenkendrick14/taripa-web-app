@@ -1,0 +1,24 @@
+.route-map-el {
+  height: 240px;
+  width: 100%;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+}
+
+@media (min-width: 600px) {
+  .route-map-el { height: 300px; }
+}
+
+/* Shared pin styles — ::ng-deep needed for Leaflet-injected DOM */
+::ng-deep .map-pin {
+  width: 20px;
+  height: 20px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  border: 2px solid white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+}
+
+::ng-deep .map-pin-dest   { background: #D44035; }
+::ng-deep .map-pin-origin { background: #2563eb; }
