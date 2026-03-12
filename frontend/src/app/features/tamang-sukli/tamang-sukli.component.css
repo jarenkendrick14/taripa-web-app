@@ -1,0 +1,181 @@
+.sukli-page {
+  min-height: 100dvh;
+  background: var(--bg-void);
+  padding-bottom: 6rem;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-top: 1.25rem;
+  padding-bottom: 1rem;
+}
+
+.back-btn {
+  color: var(--text-secondary);
+  text-decoration: none;
+  display: flex;
+}
+
+.page-subtitle {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.description {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.25rem;
+  line-height: 1.6;
+}
+
+/* ── Fare Input ─────────────────────────────────────────── */
+.fare-input-section {
+  margin-bottom: 1.25rem;
+}
+
+.fare-field {
+  font-size: 1.5rem;
+  font-weight: 700;
+  height: 56px;
+  text-align: center;
+}
+
+/* ── Quick fares ────────────────────────────────────────── */
+.quick-fares {
+  margin-top: 0.75rem;
+}
+
+.quick-fares .form-label {
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.quick-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.quick-btn {
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  background: var(--bg-overlay);
+  border: 1px solid var(--border-medium);
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  transition: all 0.15s;
+}
+
+.quick-btn:hover:not(.active) {
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+.quick-btn.active {
+  background: var(--taripa-red);
+  color: #fff;
+  border-color: var(--taripa-red);
+}
+
+/* ── Result ─────────────────────────────────────────────── */
+.result-section {
+  padding-top: 0.25rem;
+}
+
+.result-header {
+  text-align: center;
+  padding: 1.5rem 0 1rem;
+  background: var(--bg-surface);
+  border-radius: var(--radius-md);
+  margin-bottom: 1rem;
+}
+
+.fare-amount {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 15vw, 5rem);
+  color: var(--taripa-amber);
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+.result-sub {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+
+/* ── Denominations ──────────────────────────────────────── */
+.denom-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.denom-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.denom-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: var(--radius-md);
+  padding: 0.875rem 1rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+}
+
+.denom-bill {
+  border-left: 3px solid var(--taripa-amber);
+}
+
+.denom-coin {
+  border-left: 3px solid var(--taripa-green);
+}
+
+.denom-value {
+  font-weight: 700;
+  font-size: 1rem;
+  width: 60px;
+  flex-shrink: 0;
+}
+
+.denom-count {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  flex: 1;
+}
+
+.denom-total {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* ── Tip ────────────────────────────────────────────────── */
+.tip-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  background: rgba(52, 152, 219, 0.08);
+  border: 1px solid rgba(52, 152, 219, 0.2);
+  border-radius: var(--radius-md);
+  padding: 0.875rem 1rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.tip-box .icon {
+  color: #8CF;
+}

@@ -1,0 +1,137 @@
+<div class="bantay-page">
+
+  <!-- ── Header ─────────────────────────────────────────── -->
+  <header class="page-header container">
+    <a routerLink="/" class="back-btn" aria-label="Back">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5M12 5l-7 7 7 7" />
+      </svg>
+    </a>
+    <div>
+      <h1 class="display-md">Bantay Batas</h1>
+      <p class="page-subtitle">Community Terminal Alerts</p>
+    </div>
+  </header>
+
+  <!-- ── GPS Status ─────────────────────────────────────── -->
+  <div class="container gps-bar">
+    @if (myPosition()) {
+      <div class="gps-active">
+        <div class="gps-dot"></div>
+        <span>GPS active — map updated</span>
+      </div>
+    } @else {
+      <button class="btn btn-ghost btn-full" (click)="enableGps()" [disabled]="gpsLoading()">
+        @if (gpsLoading()) {
+          <div class="spinner spinner-sm"></div> Getting location...
+        } @else {
+          <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+            <circle cx="12" cy="10" r="3" />
+          </svg>
+          <span>Enable GPS for proximity alerts</span>
+        }
+      </button>
+    }
+    @if (gpsError()) {
+      <div class="alert alert-error gps-error">{{ gpsError() }}</div>
+    }
+  </div>
+
+  <!-- ── Nearby Alert Banners ───────────────────────────── -->
+  @for (alert of nearbyAlerts(); track alert.id) {
+    <div class="container">
+      <div class="alert-banner">
+        <p class="alert-banner-title">
+          <svg class="icon icon-xs" viewBox="0 0 24 24" aria-hidden="true">
+            <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
+          </svg>
+          High-Complaint Terminal Nearby!
+        </p>
+        <p class="alert-banner-name">{{ alert.name }}</p>
+        <p class="alert-banner-stats">
+          {{ alert.reports_last_7d }} overcharging reports in the last 7 days
+          @if (alert.distanceM) {
+            · {{ (alert.distanceM / 1000).toFixed(2) }} km away
+          }
+        </p>
+      </div>
+    </div>
+  }
+
+  <!-- ── Map ───────────────────────────────────────────── -->
+  <div class="container map-section">
+    <div #mapEl class="bantay-map"></div>
+    <p class="map-legend">
+      <span class="legend-dot" style="background:#D44035"></span> 5+ reports
+      <span class="legend-dot" style="background:#d97706"></span> 1–4 reports
+      <span class="legend-dot" style="background:#16a34a"></span> Clear
+      <span class="legend-dot legend-dot-user"></span> You
+    </p>
+  </div>
+
+  <!-- ── Terminal List ──────────────────────────────────── -->
+  <div class="container terminals-section">
+    <p class="section-label">All Monitored Terminals</p>
+
+    @if (loading()) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <span>Loading terminal data...</span>
+      </div>
+    } @else {
+      <div class="terminal-list">
+        @for (terminal of sortedTerminals; track terminal.id) {
+          <div
+            class="terminal-card"
+            [class.high-alert]="terminal.reports_last_7d >= 5"
+            [class.nearby]="terminal.nearbyAlert">
+            <div class="terminal-top">
+              <div class="terminal-info">
+                <h3 class="terminal-name">{{ terminal.name }}</h3>
+                <p class="terminal-barangay">{{ terminal.barangay }}</p>
+              </div>
+              <div>
+                @if (terminal.reports_last_7d >= 10) {
+                  <span class="badge badge-danger">
+                    <span class="status-dot status-dot-danger"></span>
+                    {{ terminal.reports_last_7d }}
+                  </span>
+                } @else if (terminal.reports_last_7d >= 5) {
+                  <span class="badge badge-warning">
+                    <span class="status-dot status-dot-warning"></span>
+                    {{ terminal.reports_last_7d }}
+                  </span>
+                } @else if (terminal.reports_last_7d > 0) {
+                  <span class="badge badge-neutral">{{ terminal.reports_last_7d }} reports</span>
+                } @else {
+                  <span class="badge badge-success">
+                    <svg class="icon icon-xs" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M9 12l2 2 4-4" />
+                      <circle cx="12" cy="12" r="9" />
+                    </svg>
+                    Clear
+                  </span>
+                }
+              </div>
+            </div>
+            @if (terminal.distanceM !== undefined) {
+              <p class="terminal-distance">
+                <svg class="icon icon-xs" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <span>{{ terminal.distanceM < 1000
+                  ? terminal.distanceM + ' m'
+                  : (terminal.distanceM / 1000).toFixed(2) + ' km' }} away</span>
+              </p>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+</div>

@@ -1,0 +1,393 @@
+<div class="resibo-page">
+
+  <!-- ── Header ─────────────────────────────────────────── -->
+  <header class="page-header container">
+    <a routerLink="/" class="back-btn" aria-label="Back">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5M12 5l-7 7 7 7" />
+      </svg>
+    </a>
+    <div>
+      <h1 class="display-md">Resibo</h1>
+      <p class="page-subtitle">Legal Fare Calculator</p>
+    </div>
+  </header>
+
+  <!-- ── STEP: FORM ─────────────────────────────────────── -->
+  @if (step() === 'form') {
+    <div class="container form-section">
+
+      <!-- Passenger Type -->
+      <div class="form-group">
+        <label class="form-label">Passenger Type</label>
+        <div class="passenger-tabs">
+          @for (type of passengerTypes; track type.value) {
+            <button
+              class="ptab"
+              [class.active]="passengerType() === type.value"
+              (click)="passengerType.set(type.value)">
+              {{ type.label }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- Passenger Count -->
+      <div class="form-group">
+        <label class="form-label">Number of Passengers</label>
+        <div class="passenger-tabs">
+          @for (c of passengerCounts; track c.value) {
+            <button
+              class="ptab"
+              [class.active]="passengerCount() === c.value"
+              (click)="passengerCount.set(c.value)">
+              {{ c.label }}
+            </button>
+          }
+        </div>
+        @if (passengerCount() === 3) {
+          <p class="count-note">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Ordinance No. 723 does not define a pakiao rate for 3+ passengers. Fare shown is estimated.
+          </p>
+        }
+      </div>
+
+      <!-- Origin -->
+      <div class="form-group">
+        <label class="form-label">
+          <span class="loc-dot loc-dot-origin"></span>
+          Origin
+        </label>
+        <div class="location-row">
+          <div class="loc-search-wrap" [class.confirmed]="!!originCoords()">
+            <input
+              class="loc-search-input"
+              type="search"
+              [(ngModel)]="originQuery"
+              (ngModelChange)="searchPlaces('origin', $event)"
+              (input)="originCoords.set(null); locationError.set(null)"
+              placeholder="Search a place in Angeles City..."
+              autocomplete="off" />
+            @if (originSearching) {
+              <span class="loc-search-spinner"></span>
+            } @else if (originCoords()) {
+              <svg class="loc-search-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M20 6L9 17l-5-5"/>
+              </svg>
+            }
+            @if (originResults.length > 0) {
+              <div class="loc-dropdown">
+                @for (r of originResults; track r.display_name) {
+                  <button class="loc-dropdown-item" (click)="pickSearchResult('origin', r)">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;color:var(--text-muted)">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+                    </svg>
+                    {{ r.display_name.split(',').slice(0, 3).join(',') }}
+                  </button>
+                }
+              </div>
+            }
+          </div>
+          @if (locationError()?.field === 'origin') {
+            <p class="loc-error">{{ locationError()!.msg }}</p>
+          }
+          <button class="gps-btn" (click)="useMyLocationForOrigin()" title="Use my GPS location">
+            @if (gettingOriginGps()) {
+              <div class="spinner spinner-sm"></div>
+            } @else {
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3" /><path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
+              </svg>
+            }
+          </button>
+          <button
+            class="map-pick-btn"
+            [class.active]="pickingFor() === 'origin'"
+            (click)="openPicker('origin')"
+            title="Pick on map">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+            </svg>
+          </button>
+        </div>
+
+        @if (pickingFor() === 'origin') {
+          <div class="picker-wrap">
+            <app-map-picker
+              [initialLat]="15.1509" [initialLng]="120.5918"
+              markerLabel="Origin"
+              (locationPicked)="onLocationPicked($event)" />
+          </div>
+        }
+      </div>
+
+      <!-- Destination -->
+      <div class="form-group">
+        <label class="form-label">
+          <span class="loc-dot loc-dot-dest"></span>
+          Destination
+        </label>
+        <div class="location-row">
+          <div class="loc-search-wrap" [class.confirmed]="!!destCoords()">
+            <input
+              class="loc-search-input"
+              type="search"
+              [(ngModel)]="destQuery"
+              (ngModelChange)="searchPlaces('dest', $event)"
+              (input)="destCoords.set(null); locationError.set(null)"
+              placeholder="Search a place in Angeles City..."
+              autocomplete="off" />
+            @if (destSearching) {
+              <span class="loc-search-spinner"></span>
+            } @else if (destCoords()) {
+              <svg class="loc-search-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M20 6L9 17l-5-5"/>
+              </svg>
+            }
+            @if (destResults.length > 0) {
+              <div class="loc-dropdown">
+                @for (r of destResults; track r.display_name) {
+                  <button class="loc-dropdown-item" (click)="pickSearchResult('dest', r)">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;color:var(--text-muted)">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+                    </svg>
+                    {{ r.display_name.split(',').slice(0, 3).join(',') }}
+                  </button>
+                }
+              </div>
+            }
+          </div>
+          @if (locationError()?.field === 'dest') {
+            <p class="loc-error">{{ locationError()!.msg }}</p>
+          }
+          <button
+            class="map-pick-btn"
+            [class.active]="pickingFor() === 'dest'"
+            (click)="openPicker('dest')"
+            title="Pick on map">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+            </svg>
+          </button>
+        </div>
+
+        @if (pickingFor() === 'dest') {
+          <div class="picker-wrap">
+            <app-map-picker
+              [initialLat]="originCoords()?.lat ?? 15.1509"
+              [initialLng]="originCoords()?.lng ?? 120.5918"
+              [fixedMarkerLat]="originCoords()?.lat"
+              [fixedMarkerLng]="originCoords()?.lng"
+              fixedMarkerLabel="Origin"
+              markerLabel="Destination"
+              (locationPicked)="onLocationPicked($event)" />
+          </div>
+        }
+      </div>
+
+      <!-- Live route preview — shown as soon as both points are set -->
+      @if (originCoords() && destCoords() && pickingFor() === null) {
+        <div class="route-preview">
+          <app-route-map
+            [originLat]="originCoords()!.lat"
+            [originLng]="originCoords()!.lng"
+            [originLabel]="originName || 'Origin'"
+            [destLat]="destCoords()!.lat"
+            [destLng]="destCoords()!.lng"
+            [destLabel]="destName || 'Destination'"
+            (roadDistanceKm)="onRoadDistanceKm($event)" />
+
+          <!-- Google-Maps-style info bar -->
+          <div class="route-info-bar">
+            <div class="route-info-stat">
+              <span class="route-info-value mono">{{ displayDistanceKm() }} km</span>
+              <span class="route-info-label">{{ isRoadDistance() ? 'by road' : 'loading…' }}</span>
+            </div>
+            <div class="route-info-divider"></div>
+            <div class="route-info-legs">
+              <div class="route-leg">
+                <span class="leg-dot leg-dot-origin"></span>
+                <span class="leg-name">{{ originName || 'Origin' }}</span>
+              </div>
+              <div class="route-leg-line"></div>
+              <div class="route-leg">
+                <span class="leg-dot leg-dot-dest"></span>
+                <span class="leg-name">{{ destName || 'Destination' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      @if (error()) {
+        <div class="alert alert-error">
+          <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+            <line x1="12" y1="9" x2="12" y2="13" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
+          </svg>
+          <span>{{ error() }}</span>
+        </div>
+      }
+
+      <button
+        class="btn btn-primary btn-full btn-lg"
+        [disabled]="!canCalculate() || calculating()"
+        (click)="calculate()">
+        @if (calculating()) {
+          <div class="spinner"></div> Calculating...
+        } @else {
+          <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+          </svg>
+          <span>Generate Resibo</span>
+        }
+      </button>
+    </div>
+  }
+
+  <!-- ── STEP: RESIBO RECEIPT ───────────────────────────── -->
+  @if (step() === 'resibo' && result()) {
+    <div class="container receipt-section">
+
+      <!-- Route map -->
+      <app-route-map
+        [originLat]="originCoords()?.lat ?? 15.1509"
+        [originLng]="originCoords()?.lng ?? 120.5918"
+        [originLabel]="result()!.origin_name"
+        [destLat]="destCoords()?.lat ?? 15.1456"
+        [destLng]="destCoords()?.lng ?? 120.5925"
+        [destLabel]="result()!.dest_name" />
+
+      <!-- Route label row -->
+      <div class="route-label-row">
+        <span class="route-point">
+          <span class="loc-dot loc-dot-origin"></span>
+          {{ result()!.origin_name }}
+        </span>
+        <svg class="route-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+        <span class="route-point">
+          <span class="loc-dot loc-dot-dest"></span>
+          {{ result()!.dest_name }}
+        </span>
+        <span class="route-dist mono">{{ result()!.distance_km }} km</span>
+      </div>
+
+      <!-- Fare hero -->
+      <div class="receipt-hero">
+        @if (passengerCount() === 2) {
+          <p class="receipt-label">TRIP FARE · 2 PASSENGERS</p>
+          <div class="fare-amount">₱{{ result()!.computed_fare }}</div>
+          <p class="receipt-passenger">₱{{ splitFare() }} each · {{ result()!.passenger_type }}</p>
+        } @else if (passengerCount() === 3) {
+          <p class="receipt-label">TRIP FARE · 3+ PASSENGERS (EST.)</p>
+          <div class="fare-amount">₱{{ result()!.computed_fare }}</div>
+          <p class="receipt-passenger">Pakiao rate may apply · {{ result()!.passenger_type }}</p>
+        } @else {
+          <p class="receipt-label">LEGAL FARE</p>
+          <div class="fare-amount">₱{{ result()!.computed_fare }}</div>
+          <p class="receipt-passenger">{{ result()!.passenger_type }} · 1 passenger</p>
+        }
+      </div>
+
+      <!-- Pakiao warning for 3+ -->
+      @if (showPakiaoWarning()) {
+        <div class="pakiao-notice">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <div>
+            <strong>Pakiao / Group Fare</strong>
+            <p>Ordinance No. 723, S-2024 does not define a fixed rate for 3 or more passengers. Drivers may charge an exclusive "pakiao" rate. Verify the actual fare with your TODA.</p>
+          </div>
+        </div>
+      }
+
+      <!-- Breakdown -->
+      <div class="card receipt-breakdown">
+        <div class="breakdown-row">
+          <span>Base fare (1st km)</span>
+          <span class="mono">₱{{ result()!.base_fare.toFixed(2) }}</span>
+        </div>
+        @if (result()!.succeeding_km > 0) {
+          <div class="breakdown-row">
+            <span>{{ result()!.succeeding_km }} succeeding km × ₱{{ result()!.per_km_rate }}</span>
+            <span class="mono">₱{{ (result()!.succeeding_km * result()!.per_km_rate).toFixed(2) }}</span>
+          </div>
+        }
+        @if (result()!.discount_amount) {
+          <div class="breakdown-row breakdown-subtotal">
+            <span>Subtotal (regular)</span>
+            <span class="mono">₱{{ result()!.regular_fare!.toFixed(2) }}</span>
+          </div>
+          <div class="breakdown-row breakdown-discount">
+            <span>20% discount · {{ result()!.passenger_type }}</span>
+            <span class="mono discount-minus">−₱{{ result()!.discount_amount!.toFixed(2) }}</span>
+          </div>
+        }
+        @if (passengerCount() === 2) {
+          <div class="breakdown-row">
+            <span>Covers 1–2 passengers (split: ₱{{ splitFare() }} each)</span>
+            <span class="mono"></span>
+          </div>
+        }
+        <div class="divider"></div>
+        <div class="breakdown-row breakdown-total">
+          <span>Total Legal Fare</span>
+          <span class="mono">₱{{ totalFare() }}</span>
+        </div>
+      </div>
+
+      <!-- Legal citation -->
+      <div class="citation-box">
+        <svg class="icon icon-md" viewBox="0 0 24 24" aria-hidden="true" style="flex-shrink:0">
+          <path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/>
+        </svg>
+        <div>
+          <p class="citation-title">Legal Basis</p>
+          <p class="citation-text">{{ result()!.ordinance_cite }}</p>
+          <p class="citation-sub">Angeles City Government, 2024</p>
+        </div>
+      </div>
+
+      <!-- Tamang Sukli inline -->
+      @if (result()!.exact_change.length > 0) {
+        <div class="card sukli-section">
+          <p class="section-label">Tamang Sukli — Exact Change</p>
+          <div class="sukli-grid">
+            @for (denom of result()!.exact_change; track denom.denom) {
+              <div class="sukli-item">
+                <span class="sukli-denom mono">₱{{ denom.denom }}</span>
+                <span class="sukli-times">×{{ denom.count }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Actions -->
+      <div class="receipt-actions">
+        <button class="btn btn-ghost" (click)="shareResibo()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+          </svg>
+          Share
+        </button>
+        <a routerLink="/report" class="btn btn-danger">
+          <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+            <line x1="4" y1="22" x2="4" y2="15" />
+          </svg>
+          <span>Report Overcharge</span>
+        </a>
+        <button class="btn btn-ghost" (click)="reset()">New Fare</button>
+      </div>
+
+      <p class="receipt-timestamp mono">Generated {{ result()!.generated_at | date:'medium' }}</p>
+    </div>
+  }
+
+</div>

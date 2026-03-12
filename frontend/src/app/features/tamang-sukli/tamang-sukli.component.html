@@ -1,0 +1,102 @@
+<div class="sukli-page">
+
+  <!-- ── Header ─────────────────────────────────────────── -->
+  <header class="page-header container">
+    <a routerLink="/" class="back-btn" aria-label="Back">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5M12 5l-7 7 7 7" />
+      </svg>
+    </a>
+    <div>
+      <h1 class="display-md">Tamang Sukli</h1>
+      <p class="page-subtitle">Exact Change Calculator</p>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <p class="description">
+      Show the driver the exact bills and coins for your legal fare.
+      No more <em>"walang barya"</em> excuses.
+    </p>
+
+    <!-- ── Fare Input ─────────────────────────────────────── -->
+    <div class="fare-input-section">
+      <div class="form-group">
+        <label class="form-label" for="fareField">Legal Fare Amount (₱)</label>
+        <input
+          id="fareField"
+          class="form-input fare-field mono"
+          type="number"
+          [(ngModel)]="fareInput"
+          (ngModelChange)="onFareInput($event)"
+          placeholder="35"
+          min="1"
+          max="9999" />
+      </div>
+
+      <div class="quick-fares">
+        <p class="form-label">Common fares</p>
+        <div class="quick-grid">
+          @for (fare of commonFares; track fare) {
+            <button
+              class="quick-btn"
+              [class.active]="fareInput === fare"
+              (click)="setFare(fare)">
+              ₱{{ fare }}
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Change Breakdown ────────────────────────────────── -->
+    @if (fare() > 0) {
+      <div class="result-section">
+
+        <div class="result-header">
+          <div class="fare-amount">₱{{ fare() }}</div>
+          <p class="result-sub">{{ changeItems().length }} denomination{{ changeItems().length !== 1 ? 's' : '' }}</p>
+        </div>
+
+        @if (bills().length > 0) {
+          <p class="denom-label">Bills</p>
+          <div class="denom-list">
+            @for (item of bills(); track item.denom.value) {
+              <div class="denom-card denom-bill">
+                <span class="denom-value">{{ item.denom.label }}</span>
+                <span class="denom-count">× {{ item.count }}</span>
+                <span class="denom-total mono">= ₱{{ item.denom.value * item.count }}</span>
+              </div>
+            }
+          </div>
+        }
+
+        @if (coins().length > 0) {
+          <p class="denom-label">Coins</p>
+          <div class="denom-list">
+            @for (item of coins(); track item.denom.value) {
+              <div class="denom-card denom-coin">
+                <span class="denom-value">{{ item.denom.label }}</span>
+                <span class="denom-count">× {{ item.count }}</span>
+                <span class="denom-total mono">= ₱{{ item.denom.value * item.count }}</span>
+              </div>
+            }
+          </div>
+        }
+
+        <div class="tip-box">
+          <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="16" x2="12" y2="12" />
+            <line x1="12" y1="8" x2="12.01" y2="8" />
+          </svg>
+          <span><strong>Tip:</strong> Prepare exact change before boarding. If the driver claims
+          "walang barya," show this screen — you have the exact legal amount ready.</span>
+        </div>
+
+      </div>
+    }
+
+  </div>
+</div>

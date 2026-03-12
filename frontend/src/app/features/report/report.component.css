@@ -1,0 +1,115 @@
+.report-page {
+  min-height: 100dvh;
+  background: var(--bg-void);
+  padding-bottom: 6rem;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-top: 1.25rem;
+  padding-bottom: 1rem;
+}
+
+.back-btn {
+  color: var(--text-secondary);
+  text-decoration: none;
+  display: flex;
+}
+
+.page-subtitle {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+/* ── Form ───────────────────────────────────────────────── */
+.form-section {
+  padding-top: 0.25rem;
+}
+
+.info-banner {
+  margin-bottom: 1.25rem;
+}
+
+.fare-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.fare-row .form-input {
+  flex: 1;
+}
+
+.calc-link {
+  flex-shrink: 0;
+  padding: 0.75rem 0.875rem;
+  font-size: 0.8rem;
+}
+
+.overcharge-preview {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(192, 57, 43, 0.1);
+  border: 1px solid rgba(192, 57, 43, 0.25);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.oc-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--taripa-red);
+}
+
+.oc-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--taripa-red);
+}
+
+textarea.form-input {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* ── Success State ──────────────────────────────────────── */
+.success-section {
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.success-icon {
+  display: flex;
+  justify-content: center;
+  color: var(--taripa-green);
+  margin-bottom: 1rem;
+}
+
+.success-sub {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin: 0.75rem 0;
+  line-height: 1.6;
+}
+
+.gps-badge {
+  display: inline-flex;
+  margin: 0.75rem auto;
+}
+
+.success-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+button:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}

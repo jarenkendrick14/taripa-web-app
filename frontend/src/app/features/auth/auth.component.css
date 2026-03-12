@@ -1,0 +1,56 @@
+/* Shared styles for Login and Register pages */
+
+.auth-page {
+  min-height: 100dvh;
+  background: var(--bg-void);
+  display: flex;
+  align-items: center;
+}
+
+.auth-container {
+  padding: 2rem 1rem;
+  width: 100%;
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.auth-sub {
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
+  font-size: 0.9rem;
+}
+
+.auth-switch {
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-top: 1rem;
+}
+
+.auth-switch a {
+  color: var(--taripa-red);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.auth-switch a:hover {
+  text-decoration: underline;
+}
+
+.back-link {
+  margin-top: 0.5rem;
+}
+
+.spinner-sm {
+  width: 16px;
+  height: 16px;
+  margin-right: 0.25rem;
+}
+
+button:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
