@@ -38,8 +38,8 @@ exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const [rows] = await db.query(
-      'SELECT id, email, password_hash, display_name, role, account_age FROM users WHERE email = ?',
-      [email]
+      'SELECT id, email, password_hash, display_name, role, account_age FROM users WHERE email = ? OR (display_name = ? AND display_name IS NOT NULL AND display_name != \'\') LIMIT 1',
+      [email, email]
     );
     const user = rows[0];
     if (!user || !(await bcrypt.compare(password, user.password_hash))) {

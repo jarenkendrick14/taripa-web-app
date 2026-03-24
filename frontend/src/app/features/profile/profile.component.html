@@ -1,0 +1,128 @@
+<div class="profile-page animate-up">
+  <header class="page-header container">
+    <a routerLink="/" class="back-btn" aria-label="Back">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    </a>
+    <div>
+      <h1 class="display-md">Profile</h1>
+      <p class="page-subtitle">Your Account</p>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- Avatar + Name -->
+    <div class="profile-hero card">
+      <div class="profile-avatar">{{ (auth.user()?.display_name || auth.user()?.email || '?')[0].toUpperCase() }}</div>
+      <div class="profile-identity">
+        <p class="profile-name">{{ auth.user()?.display_name || 'Commuter' }}</p>
+        <p class="profile-email">{{ auth.user()?.email }}</p>
+        <span class="profile-role" [class.role-admin]="auth.isAdmin()">{{ auth.user()?.role }}</span>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="profile-tabs">
+      <button class="ptab" [class.active]="tab() === 'info'" (click)="setTab('info')">Account</button>
+      <button class="ptab" [class.active]="tab() === 'history'" (click)="setTab('history')">Fare History</button>
+      <button class="ptab" [class.active]="tab() === 'reports'" (click)="setTab('reports')">My Reports</button>
+    </div>
+
+    <!-- Account Tab -->
+    @if (tab() === 'info') {
+      <div class="card profile-info">
+        <div class="info-row">
+          <span class="info-label">Email</span>
+          <span class="info-value">{{ auth.user()?.email }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Display Name</span>
+          <span class="info-value">{{ auth.user()?.display_name || '—' }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Role</span>
+          <span class="info-value">{{ auth.user()?.role }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Account Age</span>
+          <span class="info-value mono">{{ auth.user()?.account_age }} days</span>
+        </div>
+        @if (auth.user()?.trusted_contact_name) {
+          <div class="info-row">
+            <span class="info-label">Trusted Contact</span>
+            <span class="info-value">{{ auth.user()?.trusted_contact_name }} · {{ auth.user()?.trusted_contact_phone }}</span>
+          </div>
+        }
+      </div>
+      @if (auth.isAdmin()) {
+        <a routerLink="/admin" class="btn btn-primary btn-full" style="margin-top:12px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Admin Dashboard
+        </a>
+      }
+      <button class="btn btn-ghost btn-full logout-btn" (click)="logout()">Sign Out</button>
+    }
+
+    <!-- Resibo History Tab -->
+    @if (tab() === 'history') {
+      @if (loading()) {
+        <div class="loading-state">Loading history...</div>
+      } @else if (history().length === 0) {
+        <div class="empty-state">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <p>No fare history yet.</p>
+          <a routerLink="/resibo" class="btn btn-primary">Calculate a Fare</a>
+        </div>
+      } @else {
+        <div class="history-list">
+          @for (h of history(); track h.id) {
+            <div class="card history-card">
+              <div class="history-route">
+                <span class="history-loc">{{ h.origin_name || 'Origin' }}</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                <span class="history-loc">{{ h.dest_name || 'Destination' }}</span>
+              </div>
+              <div class="history-meta">
+                <span class="history-fare mono">&#8369;{{ h.computed_fare }}</span>
+                <span class="history-type">{{ h.passenger_type }}</span>
+                <span class="history-dist mono">{{ h.distance_km }} km</span>
+                <span class="history-date">{{ h.created_at | date:'MMM d, h:mm a' }}</span>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    }
+
+    <!-- My Reports Tab -->
+    @if (tab() === 'reports') {
+      @if (reports().length === 0) {
+        <div class="empty-state">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+          <p>No reports submitted yet.</p>
+          <a routerLink="/report" class="btn btn-danger">Report Overcharge</a>
+        </div>
+      } @else {
+        <div class="history-list">
+          @for (r of reports(); track r.id) {
+            <div class="card history-card">
+              <div class="report-header">
+                <span class="body-number mono">{{ r.body_number }}</span>
+                <span class="report-status" [class]="'status-' + r.status">{{ r.status }}</span>
+              </div>
+              <div class="history-route">
+                <span class="history-loc">{{ r.origin_name || '—' }}</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                <span class="history-loc">{{ r.destination_name || '—' }}</span>
+              </div>
+              <div class="history-meta">
+                <span class="history-fare mono overcharge">+&#8369;{{ r.overcharge_amount }}</span>
+                <span class="history-type">Reported &#8369;{{ r.reported_fare }} · Legal &#8369;{{ r.calculated_fare }}</span>
+                <span class="history-date">{{ r.reported_at | date:'MMM d, h:mm a' }}</span>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    }
+  </div>
+</div>

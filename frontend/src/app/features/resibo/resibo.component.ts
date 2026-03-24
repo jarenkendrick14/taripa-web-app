@@ -1,7 +1,7 @@
 import { Component, inject, signal, computed, NgZone, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { DatePipe } from '@angular/common';
+import { DatePipe, UpperCasePipe } from '@angular/common';
 import { FareService } from '../../core/services/fare.service';
 import { GeolocationService } from '../../core/services/geolocation.service';
 import { GoogleMapsLoaderService } from '../../core/services/google-maps-loader.service';
@@ -24,7 +24,7 @@ export type PassengerCount = 1 | 2 | 3;
 @Component({
   selector: 'app-resibo',
   standalone: true,
-  imports: [FormsModule, RouterLink, DatePipe, MapPickerComponent, RouteMapComponent],
+  imports: [FormsModule, RouterLink, DatePipe, UpperCasePipe, MapPickerComponent, RouteMapComponent],
   templateUrl: './resibo.component.html',
   styleUrl: './resibo.component.css',
 })
@@ -34,13 +34,13 @@ export class ResiboComponent implements OnInit {
   private googleLoader  = inject(GoogleMapsLoaderService);
   private ngZone        = inject(NgZone);
 
-  // Angeles City administrative boundary — OSM relation 9386775 (admin_level=6)
-  private readonly BOUNDS = { latMin: 15.1081703, latMax: 15.1794119, lngMin: 120.4780711, lngMax: 120.6371543 };
   private useGoogle = false;
 
   step             = signal<ResiboStep>('form');
   result           = signal<FareCalculationResult | null>(null);
   calculating      = signal(false);
+  showMatrix       = signal(false);
+  isOffline        = signal(!navigator.onLine);
   gettingOriginGps = signal(false);
   error            = signal<string | null>(null);
   locationError    = signal<{ field: 'origin' | 'dest'; msg: string } | null>(null);
@@ -50,8 +50,9 @@ export class ResiboComponent implements OnInit {
   destCoords       = signal<{ lat: number; lng: number } | null>(null);
   pickingFor       = signal<PickingFor>(null);
 
-  originName = '';
-  destName   = '';
+  originName        = '';
+  destName          = '';
+  bodyNumberForShare = '';
 
   // Inline search state
   originQuery     = '';
@@ -64,6 +65,9 @@ export class ResiboComponent implements OnInit {
   private searchTimer: any;
 
   async ngOnInit() {
+    window.addEventListener('online',  () => this.isOffline.set(false));
+    window.addEventListener('offline', () => this.isOffline.set(true));
+
     const gmaps = await this.googleLoader.load();
     this.useGoogle = !!gmaps?.places?.AutocompleteSuggestion;
   }
@@ -75,19 +79,15 @@ export class ResiboComponent implements OnInit {
       else                    this.destResults   = [];
       return;
     }
-    clearTimeout(this.searchTimer);
     this.searchTimer = setTimeout(async () => {
       if (field === 'origin') this.originSearching = true;
       else                    this.destSearching   = true;
 
-      const { latMin, latMax, lngMin, lngMax } = this.BOUNDS;
-
-      if (this.useGoogle) {
-        const gmaps = (window as any).google?.maps;
+      const gmaps = (window as any).google?.maps;
+      if (this.useGoogle && gmaps) {
         try {
           const { suggestions } = await gmaps.places.AutocompleteSuggestion.fetchAutocompleteSuggestions({
             input: q,
-            locationRestriction: { north: latMax, south: latMin, east: lngMax, west: lngMin },
             includedRegionCodes: ['ph'],
           });
           this.ngZone.run(() => {
@@ -105,11 +105,14 @@ export class ResiboComponent implements OnInit {
         }
       } else {
         // Nominatim fallback — appended with "Angeles City" + strict address filter
-        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q + ' Angeles City')}&viewbox=120.52,15.22,120.63,15.09&bounded=1&limit=8&addressdetails=1`;
+        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q + ' Angeles City')}&limit=8&addressdetails=1`;
         fetch(url, { headers: { 'Accept-Language': 'en' } })
           .then(r => r.json())
           .then((data: any[]) => {
-            const filtered = data.filter((r: any) => r.display_name.toLowerCase().includes('angeles'));
+            const filtered = data.filter((r: any) => {
+              const name = r.display_name.toLowerCase();
+              return name.includes('angeles city') || name.includes(', angeles,');
+            });
             this.ngZone.run(() => {
               const results: LocationResult[] = filtered.map((r: any) => ({ display_name: r.display_name, lat: r.lat, lon: r.lon }));
               if (field === 'origin') { this.originResults = results; this.originSearching = false; }
@@ -137,15 +140,26 @@ export class ResiboComponent implements OnInit {
       try {
         const place = new gmaps.places.Place({ id: r.placeId });
         await place.fetchFields({ fields: ['location', 'displayName', 'formattedAddress', 'addressComponents'] });
-        const locality = (place.addressComponents || []).find((c: any) => c.types?.includes('locality'));
-        const cityName = (locality?.longText || '').toLowerCase();
-        if (cityName !== 'angeles' && cityName !== 'angeles city') {
+        
+        let isActuallyInAngeles = false;
+        for (const component of (place.addressComponents || [])) {
+          if (component.types?.includes("locality")) {
+            const name = component.longText;
+            if (name === "Angeles" || name === "Angeles City") {
+              isActuallyInAngeles = true;
+            }
+            break;
+          }
+        }
+
+        if (!isActuallyInAngeles) {
           this.ngZone.run(() => this.locationError.set({
             field,
             msg: 'That location is outside Angeles City. TARIPA only covers tricycles operating within the city.',
           }));
           return;
         }
+
         const lat  = place.location.lat();
         const lng  = place.location.lng();
         const name = (place.displayName || place.formattedAddress || r.display_name).split(',').slice(0, 2).join(',').trim();
@@ -154,7 +168,8 @@ export class ResiboComponent implements OnInit {
     } else if (r.lat && r.lon) {
       const lat = parseFloat(r.lat);
       const lng = parseFloat(r.lon);
-      if (!r.display_name.toLowerCase().includes('angeles')) {
+      const isAngeles = r.display_name.toLowerCase().includes('angeles city') || r.display_name.toLowerCase().includes(', angeles,');
+      if (!isAngeles) {
         this.locationError.set({
           field,
           msg: 'That location is outside Angeles City. TARIPA only covers tricycles operating within the city.',
@@ -259,29 +274,29 @@ export class ResiboComponent implements OnInit {
     this.error.set(null);
     this.geoService.getCurrentPosition().subscribe({
       next: async (pos) => {
-        const { latMin, latMax, lngMin, lngMax } = this.BOUNDS;
-        if (pos.lat < latMin || pos.lat > latMax || pos.lng < lngMin || pos.lng > lngMax) {
-          this.error.set('Your current location is outside Angeles City. TARIPA only covers tricycles operating within Angeles City.');
-          this.gettingOriginGps.set(false);
-          return;
-        }
-        this.originCoords.set(pos);
-        this.originName  = 'My Location';
-        this.originQuery = 'My Location';
-        this.gettingOriginGps.set(false);
-        if (this.pickingFor() === 'origin') this.pickingFor.set(null);
-        // Reverse geocode in background
         try {
-          const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${pos.lat}&lon=${pos.lng}&zoom=17`;
+          const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${pos.lat}&lon=${pos.lng}&zoom=17&addressdetails=1`;
           const res  = await fetch(url, { headers: { 'Accept-Language': 'en' } });
           const data = await res.json();
-          if (data?.display_name) {
-            this.ngZone.run(() => {
-              this.originName  = data.display_name.split(',').slice(0, 2).join(',').trim();
-              this.originQuery = this.originName;
-            });
+          
+          const city = (data?.address?.city || data?.address?.town || data?.address?.municipality || '').toLowerCase();
+          if (city !== 'angeles' && city !== 'angeles city' && !data?.display_name?.toLowerCase().includes('angeles city')) {
+            this.error.set('Your current location is outside Angeles City. TARIPA only covers tricycles operating within Angeles City.');
+            this.gettingOriginGps.set(false);
+            return;
           }
-        } catch { /* keep "My Location" */ }
+
+          this.ngZone.run(() => {
+            this.originCoords.set(pos);
+            this.originName = (data.display_name || 'My Location').split(',').slice(0, 2).join(',').trim();
+            this.originQuery = this.originName;
+            this.gettingOriginGps.set(false);
+            if (this.pickingFor() === 'origin') this.pickingFor.set(null);
+          });
+        } catch {
+          this.error.set('Could not verify your location. Please search for your origin manually.');
+          this.gettingOriginGps.set(false);
+        }
       },
       error: (msg) => {
         this.error.set(msg);
@@ -294,21 +309,31 @@ export class ResiboComponent implements OnInit {
     this.pickingFor.set(this.pickingFor() === for_ ? null : for_);
   }
 
-  onLocationPicked(loc: PickedLocation): void {
+  async onLocationPicked(loc: PickedLocation) {
     const field = this.pickingFor();
     if (!field) return;
-    const { latMin, latMax, lngMin, lngMax } = this.BOUNDS;
-    if (loc.lat < latMin || loc.lat > latMax || loc.lng < lngMin || loc.lng > lngMax) {
-      this.locationError.set({
-        field,
-        msg: 'That location is outside Angeles City. TARIPA only covers tricycles operating within the city.',
-      });
+
+    try {
+      const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${loc.lat}&lon=${loc.lng}&zoom=17&addressdetails=1`;
+      const res  = await fetch(url, { headers: { 'Accept-Language': 'en' } });
+      const data = await res.json();
+      
+      const city = (data?.address?.city || data?.address?.town || data?.address?.municipality || '').toLowerCase();
+      if (city !== 'angeles' && city !== 'angeles city' && !data?.display_name?.toLowerCase().includes('angeles city')) {
+        this.locationError.set({
+          field,
+          msg: 'That location is outside Angeles City. TARIPA only covers tricycles operating within the city.',
+        });
+        return;
+      }
+
+      this.locationError.set(null);
+      this.setLocation(field, loc.lat, loc.lng, loc.name);
       this.pickingFor.set(null);
-      return;
+    } catch {
+      // Fallback if geocoding fails, at least we try to respect the user's intent but it's risky
+      this.locationError.set({ field, msg: 'Could not verify city boundary. Please try searching for the place instead.' });
     }
-    this.locationError.set(null);
-    this.setLocation(field, loc.lat, loc.lng, loc.name);
-    this.pickingFor.set(null);
   }
 
   calculate(): void {
@@ -352,16 +377,22 @@ export class ResiboComponent implements OnInit {
       : count === 3
         ? `Trip Fare: ₱${r.computed_fare} (3+ pax — pakiao may apply)`
         : `Legal Fare: ₱${r.computed_fare}`;
+    const bodyLine = this.bodyNumberForShare.trim()
+      ? `\nTricycle Body No.: ${this.bodyNumberForShare.trim().toUpperCase()}`
+      : '';
     const text =
-      `TARIPA Resibo\n${r.origin_name} → ${r.dest_name}\n` +
-      `Distance: ${r.distance_km} km (road)\n${fareLine}\n` +
+      `🛺 TARIPA Resibo — Safe Ride Share\n` +
+      `Route: ${r.origin_name} → ${r.dest_name}\n` +
+      `Distance: ${r.distance_km} km${bodyLine}\n` +
+      `${fareLine}\n` +
       `${r.ordinance_cite}\n\nGenerated by TARIPA — taripa.app`;
 
     if (navigator.share) {
       navigator.share({ title: 'TARIPA Resibo', text });
     } else {
-      navigator.clipboard.writeText(text);
-      alert('Resibo copied to clipboard!');
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Resibo copied to clipboard!');
+      });
     }
   }
 
@@ -372,6 +403,7 @@ export class ResiboComponent implements OnInit {
     this.destCoords.set(null);
     this.originName = '';
     this.destName   = '';
+    this.bodyNumberForShare = '';
     this.originQuery = '';
     this.destQuery   = '';
     this.originResults = [];

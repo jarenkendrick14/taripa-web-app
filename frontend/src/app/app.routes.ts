@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
+import { adminGuard } from './core/guards/admin.guard';
 
 export const routes: Routes = [
   {
@@ -23,16 +24,6 @@ export const routes: Routes = [
     title: 'Bantay Batas — Community Alerts',
   },
   {
-    path: 'safe-ride',
-    loadComponent: () => import('./features/safe-ride/safe-ride.component').then(m => m.SafeRideComponent),
-    title: 'Safe Ride Share',
-  },
-  {
-    path: 'tamang-sukli',
-    loadComponent: () => import('./features/tamang-sukli/tamang-sukli.component').then(m => m.TamangSukliComponent),
-    title: 'Tamang Sukli — Exact Change',
-  },
-  {
     path: 'report',
     loadComponent: () => import('./features/report/report.component').then(m => m.ReportComponent),
     canActivate: [authGuard],
@@ -47,6 +38,18 @@ export const routes: Routes = [
     path: 'register',
     loadComponent: () => import('./features/auth/register.component').then(m => m.RegisterComponent),
     title: 'Register — TARIPA',
+  },
+  {
+    path: 'profile',
+    loadComponent: () => import('./features/profile/profile.component').then(m => m.ProfileComponent),
+    canActivate: [authGuard],
+    title: 'Profile — TARIPA',
+  },
+  {
+    path: 'admin',
+    loadComponent: () => import('./features/admin/admin.component').then(m => m.AdminComponent),
+    canActivate: [adminGuard],
+    title: 'Admin Dashboard — TARIPA',
   },
   {
     path: '**',

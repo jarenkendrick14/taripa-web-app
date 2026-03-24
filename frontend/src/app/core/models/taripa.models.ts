@@ -141,3 +141,76 @@ export interface LatLng {
   lat: number;
   lng: number;
 }
+
+// ─── Resibo History ───────────────────────────────────────────────
+export interface ResiboHistory {
+  id: number;
+  passenger_type: string;
+  origin_name: string;
+  dest_name: string;
+  distance_km: number;
+  computed_fare: number;
+  resibo_generated: boolean;
+  created_at: string;
+}
+
+// ─── Admin ────────────────────────────────────────────────────────
+export interface AdminStats {
+  total_users: number;
+  total_reports: number;
+  pending_reports: number;
+  total_calcs: number;
+  active_terminals: number;
+  flagged_tricycles: number;
+  recent_reports: AdminReport[];
+  daily_reports_7d?: { date: string; count: number }[];
+}
+
+export interface AdminReport {
+  id: number;
+  body_number: string;
+  reported_fare: number;
+  calculated_fare: number;
+  overcharge_amount: number;
+  origin_name: string;
+  destination_name: string;
+  distance_km: number;
+  passenger_count: number;
+  description: string;
+  status: 'pending' | 'approved' | 'dismissed';
+  gps_validated: boolean;
+  reported_at: string;
+  display_name: string;
+  email: string;
+}
+
+export interface AdminUser {
+  id: number;
+  email: string;
+  display_name: string;
+  role: string;
+  account_age: number;
+  created_at: string;
+  report_count: number;
+  calc_count: number;
+}
+
+export interface AdminTerminal {
+  id: number;
+  name: string;
+  lat: number;
+  lng: number;
+  barangay: string;
+  radius_m: number;
+  active: boolean;
+  reports_last_7d: number;
+}
+
+export interface PtroReport {
+  id: number;
+  sent_at: string;
+  period_start: string;
+  period_end: string;
+  report_count: number;
+  recipient_email: string;
+}

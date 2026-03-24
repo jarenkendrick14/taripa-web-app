@@ -19,6 +19,7 @@
   --font-display: 'Outfit', 'DM Sans', system-ui, sans-serif;
   --font-body:    'DM Sans', system-ui, sans-serif;
   --font-mono:    'JetBrains Mono', 'Courier New', monospace;
+  --base-font-size: 17px;
 
   /* Spacing */
   --radius-sm:  10px;
@@ -27,8 +28,8 @@
   --radius-xl:  28px;
 
   /* Layout */
-  --header-height:     64px;
-  --bottom-nav-height: 68px;
+  --header-height:     72px;
+  --bottom-nav-height: 76px;
 }
 
 /* ══════════════════════════════════════════════════════
@@ -60,7 +61,14 @@
   --alert-success-fg: #146B3A;
   --alert-info-fg:    #1A4E7A;
 
+
   --bg-void: var(--bg-page);
+
+  /* Aliases used by profile/admin components */
+  --bg-card:      var(--bg-surface);
+  --border:       var(--border-medium);
+  --brand-red:    var(--taripa-red);
+  --accent-amber: var(--taripa-amber);
 }
 
 /* ══════════════════════════════════════════════════════
@@ -92,7 +100,12 @@
     --alert-success-fg: #5CDB9F;
     --alert-info-fg:    #70B0EE;
 
+
     --bg-void: var(--bg-page);
+    --bg-card:      var(--bg-surface);
+    --border:       var(--border-medium);
+    --brand-red:    var(--taripa-red);
+    --accent-amber: var(--taripa-amber);
   }
 }
 
@@ -124,7 +137,12 @@
   --alert-success-fg: #5CDB9F;
   --alert-info-fg:    #70B0EE;
 
+
   --bg-void: var(--bg-page);
+  --bg-card:      var(--bg-surface);
+  --border:       var(--border-medium);
+  --brand-red:    var(--taripa-red);
+  --accent-amber: var(--taripa-amber);
 }
 
 /* ══════════════════════════════════════════════════════
@@ -133,7 +151,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html {
-  font-size: 16px;
+  font-size: var(--base-font-size);
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
 }
@@ -148,6 +166,7 @@ body {
   overflow-x: hidden;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
+
 
 /* ══════════════════════════════════════════════════════
    TYPOGRAPHY
@@ -368,7 +387,7 @@ body {
 
 .map-container {
   width: 100%;
-  height: 300px;
+  height: 320px;
   border-radius: var(--radius-md);
   overflow: hidden;
   border: 1px solid var(--border-subtle);
@@ -386,3 +405,24 @@ body {
   @keyframes fade-out { to   { opacity: 0; } }
   @keyframes fade-in  { from { opacity: 0; } }
 }
+/* ── Animations ── */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-up {
+  opacity: 0;
+  animation: fadeInUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }

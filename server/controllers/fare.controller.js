@@ -168,3 +168,16 @@ exports.getTerminals = async (req, res, next) => {
     res.json(rows);
   } catch (err) { next(err); }
 };
+
+// GET /api/fare/my-history
+exports.getMyHistory = async (req, res, next) => {
+  try {
+    const [rows] = await db.query(
+      `SELECT id, passenger_type, origin_name, dest_name, distance_km, computed_fare, resibo_generated, created_at
+       FROM fare_calculations WHERE user_id = ?
+       ORDER BY created_at DESC LIMIT 50`,
+      [req.user.id]
+    );
+    res.json(rows);
+  } catch (err) { next(err); }
+};

@@ -1,6 +1,7 @@
 import { Component, OnInit, signal, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthService } from './core/services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -11,6 +12,7 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 })
 export class AppComponent implements OnInit {
   private platformId = inject(PLATFORM_ID);
+  auth = inject(AuthService);
 
   /** null = follow system preference (no data-theme attribute) */
   isDark = signal<boolean | null>(null);

@@ -22,7 +22,9 @@
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "assets": [
-              "src/manifest.webmanifest"
+              "src/manifest.webmanifest",
+              "src/assets",
+              "public"
             ],
             "styles": [
               "src/styles.css",

@@ -1,204 +1,289 @@
 <div class="home-page">
 
-  <!-- ── Hero ──────────────────────────────────────────── -->
+  <!-- ═══════════════════════════════ HERO ═══════════════════════════════ -->
   <header class="hero">
+    <div class="hero-backdrop" aria-hidden="true"></div>
+
     <div class="hero-inner container">
-
-      <!-- Left / mobile-centered: text -->
+      <!-- Left: text + CTA -->
       <div class="hero-content">
-        <span class="hero-eyebrow">
-          <svg class="icon icon-xs" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-            <circle cx="12" cy="10" r="3" />
-          </svg>
-          Tricycle Fares · Angeles City
-        </span>
+        <div class="hero-eyebrow animate-up">
+          <span class="eyebrow-badge">NEW</span>
+          <span class="eyebrow-text">Ordinance No. 723 Rates Updated</span>
+        </div>
 
-        <h1 class="hero-tagline">
-          Know the fare.<br/>
+        <h1 class="hero-tagline animate-up delay-1">
+          Know the fare.<br>
           <span class="tagline-accent">Pay the fair.</span>
         </h1>
 
-        <p class="hero-desc">
-          Exact legal tricycle fares, based on Ordinance No. 723. No driver sign-up needed.
+        <p class="hero-desc animate-up delay-2">
+          The official GPS fare calculator for Angeles City. Built to ensure every
+          commuter and driver follows the legal rates.
         </p>
 
-        <div class="hero-cta">
+        <div class="hero-actions animate-up delay-3">
           <a routerLink="/resibo" class="btn btn-primary btn-lg">
+            <svg class="icon" viewBox="0 0 24 24">
+              <path d="M12 2v20M2 12h20" />
+            </svg>
             Calculate My Fare
           </a>
-          <a routerLink="/pasaway" class="btn btn-ghost">
-            Check a Driver
-          </a>
+          <a routerLink="/pasaway" class="btn btn-ghost">Check a Driver</a>
         </div>
-      </div>
 
-      <!-- Right (desktop only): mini stats + feature highlights -->
-      <div class="hero-aside">
-        <div class="hero-stat-card card">
-          <p class="hero-stat-label section-label">Why it matters</p>
-          <div class="hero-stats">
-            <div class="hero-stat">
-              <span class="hero-stat-value">84K</span>
-              <span class="hero-stat-desc">daily commuters in Angeles City</span>
-            </div>
-            <div class="hero-stat">
-              <span class="hero-stat-value">₱8K</span>
-              <span class="hero-stat-desc">avg. yearly loss per commuter</span>
-            </div>
-            <div class="hero-stat">
-              <span class="hero-stat-value">Zero</span>
-              <span class="hero-stat-desc">driver cooperation required</span>
-            </div>
-          </div>
-        </div>
-        <div class="hero-trust">
-          <span class="trust-item">
-            <svg class="icon icon-xs icon-accent" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <div class="trust-row animate-up delay-4">
+          <span class="trust-chip">
+            <svg class="icon icon-xs" viewBox="0 0 24 24">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
             GPS-verified
           </span>
-          <span class="trust-item">
-            <svg class="icon icon-xs icon-accent" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
-            Ordinance-cited
+          <span class="trust-chip">
+            <svg class="icon icon-xs" viewBox="0 0 24 24">
+              <path d="M9 12l2 2 4-4" /><circle cx="12" cy="12" r="9" />
+            </svg>
+            Ordinance No. 723
           </span>
-          <span class="trust-item">
-            <svg class="icon icon-xs icon-accent" viewBox="0 0 24 24"><path d="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z"/><path d="M8 2v16M16 6v16"/></svg>
-            Works offline
+          <span class="trust-chip">
+            <svg class="icon icon-xs" viewBox="0 0 24 24">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+            84K+ Users
           </span>
         </div>
       </div>
 
+      <!-- Right (desktop only): floating stat card -->
+      <aside class="hero-aside" aria-label="Impact statistics">
+        <div class="impact-card">
+          <p class="section-label">Live Impact</p>
+          <div class="impact-stats">
+            <div class="impact-stat">
+              <span class="istat-val">84K+</span>
+              <span class="istat-lbl">commuters protected</span>
+            </div>
+            <div class="impact-stat">
+              <span class="istat-val">₱8K+</span>
+              <span class="istat-lbl">annual savings / user</span>
+            </div>
+          </div>
+          <div class="impact-sep"></div>
+          <p class="impact-act-title">Recent Activity</p>
+          <ul class="impact-act-list">
+            @for (act of activities.slice(0, 3); track act.location) {
+              <li class="impact-act-row">
+                <span class="arow-dot" [ngClass]="'dot--' + act.type"></span>
+                <span class="arow-label">{{ act.type | titlecase }} · <strong>{{ act.location }}</strong></span>
+                <span class="arow-time">{{ act.time }}</span>
+              </li>
+            }
+          </ul>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Live activity ticker -->
+    <div class="ticker-bar">
+      <span class="ticker-badge">
+        <span class="ticker-pulse"></span>
+        LIVE
+      </span>
+      <div class="ticker-scroll">
+        <div class="ticker-content">
+          @for (act of activities; track act.location) {
+            <span class="ticker-item">
+              <span class="tdot" [ngClass]="'tdot--' + act.type"></span>
+              {{ act.type | titlecase }} at {{ act.location }} &bull; {{ act.time }}
+            </span>
+          }
+          @for (act of activities; track act.location + 'b') {
+            <span class="ticker-item">
+              <span class="tdot" [ngClass]="'tdot--' + act.type"></span>
+              {{ act.type | titlecase }} at {{ act.location }} &bull; {{ act.time }}
+            </span>
+          }
+        </div>
+      </div>
     </div>
   </header>
 
-  <!-- ── Features ──────────────────────────────────────── -->
+  <!-- ═══════════════════════════════ FEATURES ═══════════════════════════ -->
   <section class="features-section">
     <div class="container">
-      <p class="section-label">Everything you need</p>
-      <div class="feature-grid">
+      <div class="features-intro">
+        <p class="section-label">Core Services</p>
+        <h2 class="features-heading">Everything you need<br class="br-hide-mobile"> for a fair commute</h2>
+      </div>
+      <div class="features-grid">
 
-        <a routerLink="/resibo" class="feature-card feature-primary">
-          <span class="feature-icon-wrap">
-            <svg class="icon icon-lg" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-              <polyline points="14 2 14 8 20 8" />
-              <line x1="16" y1="13" x2="8" y2="13" />
-              <line x1="16" y1="17" x2="8" y2="17" />
-              <line x1="10" y1="9" x2="8" y2="9" />
+        <a routerLink="/resibo" class="feat-card feat--calc">
+          <div class="feat-icon-wrap">
+            <svg class="icon icon-lg" viewBox="0 0 24 24">
+              <path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
             </svg>
-          </span>
-          <div class="feature-body">
-            <h3 class="feature-title">Resibo</h3>
-            <p class="feature-desc">GPS fare calculator + digital legal receipt you can show the driver</p>
           </div>
-          <svg class="feature-arrow icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M5 12h14M12 5l7 7-7 7"/>
-          </svg>
+          <div class="feat-body">
+            <h3 class="feat-title">Fare Calculator</h3>
+            <p class="feat-desc">GPS-accurate fares based on official city zones and Ordinance 723 rates.</p>
+          </div>
+          <svg class="feat-arrow icon" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
         </a>
 
-        <a routerLink="/pasaway" class="feature-card">
-          <span class="feature-icon-wrap">
-            <svg class="icon icon-lg" viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="11" cy="11" r="8" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        <a routerLink="/pasaway" class="feat-card feat--lookup">
+          <div class="feat-icon-wrap">
+            <svg class="icon icon-lg" viewBox="0 0 24 24">
+              <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
             </svg>
-          </span>
-          <div class="feature-body">
-            <h3 class="feature-title">Pasaway DB</h3>
-            <p class="feature-desc">Check a tricycle's overcharging history by body number before you board</p>
           </div>
-          <svg class="feature-arrow icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M5 12h14M12 5l7 7-7 7"/>
-          </svg>
+          <div class="feat-body">
+            <h3 class="feat-title">Driver Lookup</h3>
+            <p class="feat-desc">Check compliance history of any tricycle body number instantly.</p>
+          </div>
+          <svg class="feat-arrow icon" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
         </a>
 
-        <a routerLink="/bantay-batas" class="feature-card">
-          <span class="feature-icon-wrap">
-            <svg class="icon icon-lg" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-              <line x1="12" y1="9" x2="12" y2="13" />
-              <line x1="12" y1="17" x2="12.01" y2="17" />
+        <a routerLink="/bantay-batas" class="feat-card feat--alert">
+          <div class="feat-icon-wrap">
+            <svg class="icon icon-lg" viewBox="0 0 24 24">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+              <line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
             </svg>
-          </span>
-          <div class="feature-body">
-            <h3 class="feature-title">Bantay Batas</h3>
-            <p class="feature-desc">GPS-triggered alerts when you're near high-complaint terminals</p>
           </div>
-          <svg class="feature-arrow icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M5 12h14M12 5l7 7-7 7"/>
-          </svg>
+          <div class="feat-body">
+            <h3 class="feat-title">Community Alerts</h3>
+            <p class="feat-desc">Real-time warnings near terminals with high overcharging reports.</p>
+          </div>
+          <svg class="feat-arrow icon" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
         </a>
 
-        <a routerLink="/safe-ride" class="feature-card">
-          <span class="feature-icon-wrap">
-            <svg class="icon icon-lg" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        <a routerLink="/report" class="feat-card feat--report">
+          <div class="feat-icon-wrap">
+            <svg class="icon icon-lg" viewBox="0 0 24 24">
+              <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1zM4 22v-7" />
             </svg>
-          </span>
-          <div class="feature-body">
-            <h3 class="feature-title">Safe Ride Share</h3>
-            <p class="feature-desc">One-tap: send your trip details and body number to a trusted contact</p>
           </div>
-          <svg class="feature-arrow icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M5 12h14M12 5l7 7-7 7"/>
-          </svg>
-        </a>
-
-        <a routerLink="/tamang-sukli" class="feature-card">
-          <span class="feature-icon-wrap">
-            <svg class="icon icon-lg" viewBox="0 0 24 24" aria-hidden="true">
-              <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
-              <line x1="1" y1="10" x2="23" y2="10" />
-              <line x1="6" y1="16" x2="10" y2="16" />
-            </svg>
-          </span>
-          <div class="feature-body">
-            <h3 class="feature-title">Tamang Sukli</h3>
-            <p class="feature-desc">Exact change calculator — eliminates the "no change" excuse</p>
+          <div class="feat-body">
+            <h3 class="feat-title">Submit Report</h3>
+            <p class="feat-desc">Flag overcharging directly to local enforcement via formal submission.</p>
           </div>
-          <svg class="feature-arrow icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M5 12h14M12 5l7 7-7 7"/>
-          </svg>
-        </a>
-
-        <a routerLink="/report" class="feature-card feature-report">
-          <span class="feature-icon-wrap">
-            <svg class="icon icon-lg" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
-              <line x1="4" y1="22" x2="4" y2="15" />
-            </svg>
-          </span>
-          <div class="feature-body">
-            <h3 class="feature-title">Report Driver</h3>
-            <p class="feature-desc">Submit directly to PTRO — compiled weekly for enforcement</p>
-          </div>
-          <svg class="feature-arrow icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M5 12h14M12 5l7 7-7 7"/>
-          </svg>
+          <svg class="feat-arrow icon" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
         </a>
 
       </div>
     </div>
   </section>
 
-  <!-- ── Auth CTA ───────────────────────────────────────── -->
-  @if (!auth.isLoggedIn()) {
-    <section class="cta-section container">
-      <div class="cta-card">
-        <div class="cta-text-wrap">
-          <h3 class="display-sm">Join the community</h3>
-          <p class="cta-desc">Create a free account to submit overcharging reports and use Safe Ride Share.</p>
+  <!-- ═══════════════════════════════ HOW IT WORKS ════════════════════════ -->
+  <section class="how-section">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-label">Process</p>
+        <h2 class="section-heading">Fair travel in 3 steps</h2>
+      </div>
+      <div class="steps-row">
+        <div class="step">
+          <div class="step-top">
+            <div class="step-circle"><span>01</span></div>
+            <div class="step-dash" aria-hidden="true"></div>
+          </div>
+          <h4 class="step-title">Search Route</h4>
+          <p class="step-desc">Enter your origin and destination. We use precise GPS coordinates for accuracy.</p>
         </div>
-        <div class="cta-buttons">
-          <a routerLink="/register" class="btn btn-primary">Create Account</a>
-          <a routerLink="/login" class="btn btn-ghost">Sign In</a>
+        <div class="step">
+          <div class="step-top">
+            <div class="step-circle"><span>02</span></div>
+            <div class="step-dash" aria-hidden="true"></div>
+          </div>
+          <h4 class="step-title">Get Legal Fare</h4>
+          <p class="step-desc">Our engine calculates the exact fare based on distance and city ordinances.</p>
+        </div>
+        <div class="step step--last">
+          <div class="step-top">
+            <div class="step-circle"><span>03</span></div>
+          </div>
+          <h4 class="step-title">Pay with Confidence</h4>
+          <p class="step-desc">Show the digital receipt to your driver to confirm the legal rate.</p>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════ FAQ ════════════════════════════════ -->
+  <section class="faq-section">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-label">Questions?</p>
+        <h2 class="section-heading">Everything you need to know</h2>
+      </div>
+      <div class="faq-list">
+        @for (faq of faqs; track faq.q; let i = $index) {
+          <div class="faq-item" [class.is-open]="faq.open">
+            <button class="faq-trigger" (click)="toggleFaq(i)">
+              <span class="faq-q">{{ faq.q }}</span>
+              <svg class="icon faq-chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" /></svg>
+            </button>
+            <div class="faq-body">
+              <div class="faq-inner">{{ faq.a }}</div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════ TESTIMONIALS ══════════════════════ -->
+  <section class="testimonials-section">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-label">Community Voice</p>
+        <h2 class="section-heading">Real stories from commuters</h2>
+      </div>
+      <div class="testimonials-track">
+        @for (t of testimonials; track t.author) {
+          <article class="testimonial-card">
+            <svg class="t-quote-mark" viewBox="0 0 32 24" aria-hidden="true">
+              <path d="M0 24V14C0 6.268 5.372 1.312 16.116 0l1.068 2.14C11.828 3.5 9 6.044 8 10h4v14H0zm18 0V14C18 6.268 23.372 1.312 34.116 0l1.068 2.14C29.828 3.5 27 6.044 26 10h4v14H18z"/>
+            </svg>
+            <p class="t-quote">{{ t.quote }}</p>
+            <footer class="t-footer">
+              <div class="t-avatar" aria-hidden="true">{{ t.author.charAt(0) }}</div>
+              <div>
+                <strong class="t-name">{{ t.author }}</strong>
+                <span class="t-role">{{ t.role }}</span>
+              </div>
+            </footer>
+          </article>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════ AUTH CTA ══════════════════════════ -->
+  @if (!auth.isLoggedIn()) {
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-card">
+        <div class="cta-pattern" aria-hidden="true"></div>
+        <div class="cta-text">
+          <h3 class="cta-title">Join the community</h3>
+          <p class="cta-desc">Create a free account to submit overcharging reports and view your fare history.</p>
+        </div>
+        <div class="cta-btns">
+          <a routerLink="/register" class="btn cta-btn-white">Create Account</a>
+          <a routerLink="/login" class="btn cta-btn-outline">Sign In</a>
+        </div>
+      </div>
+    </div>
+  </section>
   }
 
-  <footer class="home-footer container">
-    <p>Built for Angeles City commuters · Ordinance No. 723, S-2024</p>
+  <footer class="home-footer">
+    <div class="container">
+      <p>Built for Angeles City commuters &bull; Ordinance No. 723, S-2024</p>
+    </div>
   </footer>
 
 </div>

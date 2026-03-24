@@ -1,5 +1,5 @@
 .route-map-el {
-  height: 240px;
+  height: 260px;
   width: 100%;
   border-radius: var(--radius-md);
   overflow: hidden;
@@ -7,7 +7,7 @@
 }
 
 @media (min-width: 600px) {
-  .route-map-el { height: 300px; }
+  .route-map-el { height: 330px; }
 }
 
 /* Shared pin styles — ::ng-deep needed for Leaflet-injected DOM */

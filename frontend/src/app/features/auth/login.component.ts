@@ -20,7 +20,10 @@ export class LoginComponent {
   error    = signal<string | null>(null);
 
   login(): void {
-    if (!this.email || !this.password) return;
+    if (!this.email || !this.password) {
+      this.error.set('Please enter both your email/username and password.');
+      return;
+    }
     this.loading.set(true);
     this.error.set(null);
     this.auth.login(this.email, this.password).subscribe({

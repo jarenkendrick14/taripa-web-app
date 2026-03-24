@@ -1,0 +1,281 @@
+<div class="admin-page animate-up">
+  <header class="page-header container">
+    <a routerLink="/" class="back-btn" aria-label="Back">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    </a>
+    <div>
+      <h1 class="display-md">Admin</h1>
+      <p class="page-subtitle">Dashboard</p>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- Tabs -->
+    <div class="admin-tabs">
+      <button class="atab" [class.active]="tab() === 'overview'"  (click)="setTab('overview')">Overview</button>
+      <button class="atab" [class.active]="tab() === 'reports'"   (click)="setTab('reports')">Reports</button>
+      <button class="atab" [class.active]="tab() === 'terminals'" (click)="setTab('terminals')">Terminals</button>
+      <button class="atab" [class.active]="tab() === 'users'"     (click)="setTab('users')">Users</button>
+      <button class="atab" [class.active]="tab() === 'ptro'"      (click)="setTab('ptro')">PTRO Reports</button>
+    </div>
+
+    <!-- OVERVIEW -->
+    @if (tab() === 'overview') {
+      @if (loading()) { <div class="loading-state">Loading...</div> }
+      @if (stats()) {
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-value mono">{{ stats()!.total_users }}</span>
+            <span class="stat-label">Total Users</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value mono">{{ stats()!.total_calcs }}</span>
+            <span class="stat-label">Fares Calculated</span>
+          </div>
+          <div class="stat-card warn">
+            <span class="stat-value mono">{{ stats()!.pending_reports }}</span>
+            <span class="stat-label">Pending Reports</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value mono">{{ stats()!.total_reports }}</span>
+            <span class="stat-label">Total Reports</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value mono">{{ stats()!.active_terminals }}</span>
+            <span class="stat-label">Active Terminals</span>
+          </div>
+          <div class="stat-card danger">
+            <span class="stat-value mono">{{ stats()!.flagged_tricycles }}</span>
+            <span class="stat-label">Flagged Tricycles</span>
+          </div>
+        </div>
+
+        <!-- 7-day activity chart -->
+        @if (stats()!.daily_reports_7d && stats()!.daily_reports_7d!.length > 0) {
+          <p class="section-label" style="margin:20px 0 10px">Reports — Last 7 Days</p>
+          <div class="bar-chart">
+            @for (d of stats()!.daily_reports_7d!; track d.date) {
+              <div class="bar-col">
+                <span class="bar-value">{{ d.count }}</span>
+                <div class="bar-track">
+                  <div class="bar-fill" [style.height.%]="chartPct(d.count)"></div>
+                </div>
+                <span class="bar-label">{{ d.date | date:'EEE' }}</span>
+              </div>
+            }
+          </div>
+        }
+
+        <p class="section-label" style="margin:20px 0 10px">Recent Reports</p>
+        <div class="table-wrap">
+          <table class="admin-table">
+            <thead><tr><th>Body No.</th><th>Route</th><th>Overcharge</th><th>By</th><th>Status</th></tr></thead>
+            <tbody>
+              @for (r of stats()!.recent_reports; track r.id) {
+                <tr>
+                  <td class="mono">{{ r.body_number }}</td>
+                  <td class="route-cell">{{ r.origin_name || '—' }} &rarr; {{ r.destination_name || '—' }}</td>
+                  <td class="mono overcharge">+&#8369;{{ r.overcharge_amount }}</td>
+                  <td>{{ r.display_name || r.email }}</td>
+                  <td><span class="badge" [class]="'badge-' + r.status">{{ r.status }}</span></td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    }
+
+    <!-- REPORTS -->
+    @if (tab() === 'reports') {
+      <div class="filter-row">
+        @for (f of ['all','pending','approved','dismissed']; track f) {
+          <button class="filter-btn" [class.active]="reportFilter() === f" (click)="setReportFilter(f)">{{ f }}</button>
+        }
+      </div>
+      @if (loading()) { <div class="loading-state">Loading...</div> }
+      <div class="table-wrap">
+        <table class="admin-table">
+          <thead><tr><th>Body No.</th><th>Route</th><th>Overcharge</th><th>GPS</th><th>By</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody>
+            @for (r of reports(); track r.id) {
+              <tr>
+                <td class="mono">{{ r.body_number }}</td>
+                <td class="route-cell">{{ r.origin_name || '—' }} &rarr; {{ r.destination_name || '—' }}</td>
+                <td class="mono overcharge">+&#8369;{{ r.overcharge_amount }}</td>
+                <td>{{ r.gps_validated ? '&#10003;' : '—' }}</td>
+                <td>{{ r.display_name || r.email }}</td>
+                <td class="mono">{{ r.reported_at | date:'MMM d' }}</td>
+                <td><span class="badge" [class]="'badge-' + r.status">{{ r.status }}</span></td>
+                <td class="actions-cell">
+                  @if (r.status !== 'approved') {
+                    <button class="action-btn approve" (click)="updateStatus(r, 'approved')">&#10003;</button>
+                  }
+                  @if (r.status !== 'dismissed') {
+                    <button class="action-btn dismiss" (click)="updateStatus(r, 'dismissed')">&#10005;</button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+
+    <!-- TERMINALS -->
+    @if (tab() === 'terminals') {
+      <div class="section-header">
+        <p class="section-label">Bantay Batas Terminals</p>
+        <button class="btn btn-primary btn-sm" (click)="openNewTerminal()">+ Add Terminal</button>
+      </div>
+
+      @if (showTerminalForm()) {
+        <div class="card terminal-form">
+          <p class="form-title">{{ editingTerminal() ? 'Edit Terminal' : 'New Terminal' }}</p>
+          <div class="form-row">
+            <label>Name</label>
+            <input class="form-input" [(ngModel)]="terminalForm.name" placeholder="Terminal name" />
+          </div>
+          <div class="form-row">
+            <label>Barangay</label>
+            <input class="form-input" [(ngModel)]="terminalForm.barangay" placeholder="Barangay" />
+          </div>
+          <div class="form-row two-col">
+            <div>
+              <label>Latitude</label>
+              <input class="form-input mono" type="number" [(ngModel)]="terminalForm.lat" />
+            </div>
+            <div>
+              <label>Longitude</label>
+              <input class="form-input mono" type="number" [(ngModel)]="terminalForm.lng" />
+            </div>
+          </div>
+          <div class="form-row">
+            <label>Alert Radius (m)</label>
+            <input class="form-input mono" type="number" [(ngModel)]="terminalForm.radius_m" />
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-ghost" (click)="showTerminalForm.set(false)">Cancel</button>
+            <button class="btn btn-primary" (click)="saveTerminal()">Save</button>
+          </div>
+        </div>
+      }
+
+      @if (loading()) { <div class="loading-state">Loading...</div> }
+      <div class="table-wrap">
+        <table class="admin-table">
+          <thead><tr><th>Name</th><th>Barangay</th><th>Coords</th><th>Radius</th><th>Reports (7d)</th><th>Active</th><th>Actions</th></tr></thead>
+          <tbody>
+            @for (t of terminals(); track t.id) {
+              <tr [class.inactive-row]="!t.active">
+                <td>{{ t.name }}</td>
+                <td>{{ t.barangay || '—' }}</td>
+                <td class="mono">{{ t.lat }}, {{ t.lng }}</td>
+                <td class="mono">{{ t.radius_m }}m</td>
+                <td class="mono">{{ t.reports_last_7d }}</td>
+                <td>{{ t.active ? '&#10003;' : '&#10005;' }}</td>
+                <td class="actions-cell">
+                  <button class="action-btn edit" (click)="openEditTerminal(t)">Edit</button>
+                  @if (t.active) {
+                    <button class="action-btn dismiss" (click)="deleteTerminal(t.id)">Deactivate</button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+
+    <!-- USERS -->
+    @if (tab() === 'users') {
+      @if (loading()) { <div class="loading-state">Loading...</div> }
+
+      <!-- Edit user inline form -->
+      @if (editingUser()) {
+        <div class="card terminal-form" style="margin-bottom:16px">
+          <p class="form-title">Edit User — {{ editingUser()!.email }}</p>
+          <div class="form-row">
+            <label>Display Name</label>
+            <input class="form-input" [(ngModel)]="userEditForm.display_name" placeholder="Display name" />
+          </div>
+          <div class="form-row">
+            <label>Role</label>
+            <select class="form-input" [(ngModel)]="userEditForm.role">
+              <option value="commuter">commuter</option>
+              <option value="admin">admin</option>
+            </select>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-ghost" (click)="editingUser.set(null)">Cancel</button>
+            <button class="btn btn-primary" (click)="saveUser()">Save</button>
+          </div>
+        </div>
+      }
+
+      <div class="table-wrap">
+        <table class="admin-table">
+          <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Reports</th><th>Fares</th><th>Joined</th><th>Actions</th></tr></thead>
+          <tbody>
+            @for (u of users(); track u.id) {
+              <tr>
+                <td>{{ u.display_name || '—' }}</td>
+                <td>{{ u.email }}</td>
+                <td><span class="badge" [class]="u.role === 'admin' ? 'badge-admin' : 'badge-user'">{{ u.role }}</span></td>
+                <td class="mono">{{ u.report_count }}</td>
+                <td class="mono">{{ u.calc_count }}</td>
+                <td class="mono">{{ u.created_at | date:'MMM d, yyyy' }}</td>
+                <td class="actions-cell">
+                  <button class="action-btn edit" (click)="openEditUser(u)">Edit</button>
+                  @if (u.role !== 'admin') {
+                    <button class="action-btn dismiss" (click)="deleteUser(u)">Delete</button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+
+    <!-- PTRO -->
+    @if (tab() === 'ptro') {
+      <div class="section-header">
+        <p class="section-label">PTRO Reporting Pipeline</p>
+        <button class="btn btn-primary btn-sm" (click)="triggerPtroReport()" [disabled]="ptroLoading()">
+          @if (ptroLoading()) { <div class="spinner spinner-sm"></div> }
+          Send Report Now
+        </button>
+      </div>
+      <div class="ptro-info card">
+        <p class="ptro-desc">Weekly PDF reports are automatically compiled every <strong>Sunday at 11:59 PM</strong> and emailed to the Angeles City PTRO. Each report includes all approved overcharging complaints since the last submission.</p>
+      </div>
+      @if (ptroLoading()) { <div class="loading-state">Loading...</div> }
+      @if (ptroReports().length > 0) {
+        <p class="section-label" style="margin: 20px 0 10px">Sent Reports</p>
+        <div class="table-wrap">
+          <table class="admin-table">
+            <thead><tr><th>Date Sent</th><th>Period</th><th>Reports Included</th><th>Recipient</th><th>Status</th></tr></thead>
+            <tbody>
+              @for (r of ptroReports(); track r.id) {
+                <tr>
+                  <td class="mono">{{ r.sent_at | date:'MMM d, yyyy h:mm a' }}</td>
+                  <td class="mono">{{ r.period_start | date:'MMM d' }} – {{ r.period_end | date:'MMM d, yyyy' }}</td>
+                  <td class="mono">{{ r.report_count }}</td>
+                  <td>{{ r.recipient_email }}</td>
+                  <td><span class="badge badge-approved">sent</span></td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else if (!ptroLoading()) {
+        <div class="empty-state" style="padding: 40px; text-align: center; color: var(--text-muted);">
+          <p>No PTRO reports sent yet.</p>
+        </div>
+      }
+    }
+
+  </div>
+</div>

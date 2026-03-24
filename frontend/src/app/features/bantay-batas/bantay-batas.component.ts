@@ -151,8 +151,12 @@ export class BantayBatasComponent implements OnInit, OnDestroy, AfterViewInit {
         : `<b>${t.name}</b><br>${t.barangay}<br><span style="color:#16a34a">No recent reports ✓</span>`;
 
       this.ngZone.runOutsideAngular(() => {
+        const lat = Number(t.lat);
+        const lng = Number(t.lng);
+        if (isNaN(lat) || isNaN(lng)) return;
+
         const marker = new gmaps.Marker({
-          position: { lat: t.lat, lng: t.lng },
+          position: { lat, lng },
           map: this.gMap,
           icon: this.terminalPinIcon(color, t.reports_last_7d),
           title: t.name,
@@ -172,9 +176,13 @@ export class BantayBatasComponent implements OnInit, OnDestroy, AfterViewInit {
     if (!gmaps) return;
     this.gUserMarker?.setMap(null);
     const infoWindow = new gmaps.InfoWindow({ content: '<b>You are here</b>' });
+    const lat = Number(pos.lat);
+    const lng = Number(pos.lng);
+    if (isNaN(lat) || isNaN(lng)) return;
+
     this.ngZone.runOutsideAngular(() => {
       this.gUserMarker = new gmaps.Marker({
-        position: { lat: pos.lat, lng: pos.lng },
+        position: { lat, lng },
         map: this.gMap,
         icon: this.userDotIcon(),
         title: 'You are here',
@@ -290,10 +298,14 @@ export class BantayBatasComponent implements OnInit, OnDestroy, AfterViewInit {
           this.computeDistances(pos);
           if (this.useGoogle) {
             this.placeGoogleUserMarker(pos);
-            this.ngZone.runOutsideAngular(() => {
-              this.gMap?.setCenter({ lat: pos.lat, lng: pos.lng });
-              this.gMap?.setZoom(14);
-            });
+            const lat = Number(pos.lat);
+            const lng = Number(pos.lng);
+            if (!isNaN(lat) && !isNaN(lng)) {
+              this.ngZone.runOutsideAngular(() => {
+                this.gMap?.setCenter({ lat, lng });
+                this.gMap?.setZoom(14);
+              });
+            }
           } else {
             this.placeLeafletUserMarker(pos);
             this.map?.setView([pos.lat, pos.lng], 14);

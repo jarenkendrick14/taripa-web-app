@@ -19,11 +19,47 @@ export class RegisterComponent {
   password    = '';
   loading     = signal(false);
   error       = signal<string | null>(null);
+  emailError  = signal<string | null>(null);
+
+  private isValidEmail(value: string): boolean {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  }
+
+  onEmailInput(): void {
+    if (this.emailError()) this.emailError.set(null);
+  }
+
+  validateEmail(): void {
+    const email = this.email.trim();
+    if (!email) {
+      this.emailError.set('Email is required.');
+      return;
+    }
+    if (!this.isValidEmail(email)) {
+      this.emailError.set('Enter a valid email address.');
+      return;
+    }
+    this.emailError.set(null);
+  }
 
   register(): void {
-    if (!this.email || !this.password) return;
-    this.loading.set(true);
+    const email = this.email.trim();
+    this.email = email;
     this.error.set(null);
+    if (!email) {
+      this.emailError.set('Email is required.');
+      return;
+    }
+    if (!this.isValidEmail(email)) {
+      this.emailError.set('Enter a valid email address.');
+      return;
+    }
+    this.emailError.set(null);
+    if (!this.password) {
+      this.error.set('Password is required.');
+      return;
+    }
+    this.loading.set(true);
     this.auth.register(this.email, this.password, this.displayName).subscribe({
       next:  () => this.router.navigate(['/']),
       error: (err) => {

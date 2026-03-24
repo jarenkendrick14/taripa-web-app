@@ -1,4 +1,4 @@
-<div class="auth-page">
+<div class="auth-page animate-up">
   <div class="container auth-container">
 
     <div class="auth-header">
@@ -14,7 +14,15 @@
     <div class="form-group">
       <label class="form-label" for="email">Email</label>
       <input id="email" class="form-input" type="email"
-        [(ngModel)]="email" placeholder="you@example.com" />
+        [(ngModel)]="email"
+        (ngModelChange)="onEmailInput()"
+        (blur)="validateEmail()"
+        [class.invalid]="emailError()"
+        autocomplete="email"
+        placeholder="you@example.com" />
+      @if (emailError()) {
+        <div class="field-error">{{ emailError() }}</div>
+      }
     </div>
 
     <div class="form-group">

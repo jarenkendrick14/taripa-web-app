@@ -15,6 +15,7 @@ const reportRoutes = require('./routes/report.routes');
 const authRoutes  = require('./routes/auth.routes');
 const routeRoutes  = require('./routes/route.routes');
 const configRoutes = require('./routes/config.routes');
+const adminRoutes  = require('./routes/admin.routes');
 const ptroService  = require('./services/ptro.service');
 
 const app  = express();
@@ -48,6 +49,7 @@ app.use('/api/drivers',  driverRoutes);
 app.use('/api/reports',  reportRoutes);
 app.use('/api/route',    routeRoutes);
 app.use('/api/config',   configRoutes);
+app.use('/api/admin',    adminRoutes);
 
 // ─── Health check ─────────────────────────────────────────
 app.get('/api/health', async (req, res) => {
