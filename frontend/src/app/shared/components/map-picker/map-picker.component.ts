@@ -248,7 +248,8 @@ export class MapPickerComponent implements AfterViewInit, OnDestroy, OnChanges {
   // ── Leaflet fallback ───────────────────────────────────────
 
   private async initLeafletMap() {
-    const L = await import('leaflet');
+    const leafletModule = await import('leaflet');
+    const L = (leafletModule as any).default ?? leafletModule;
     this.L = L;
 
     delete (L.Icon.Default.prototype as any)._getIconUrl;
