@@ -85,10 +85,42 @@ cron.schedule('59 23 * * 0', async () => {
 });
 
 // Every hour — refresh tricycle flags & terminal alerts
+// Note: Inline SQL used instead of stored procedures (Railway MySQL doesn't support DELIMITER syntax)
 cron.schedule('0 * * * *', async () => {
-  await db.query('CALL RefreshTricycleFlags()');
-  await db.query('CALL RefreshTerminalAlerts()');
-  console.log('[CRON] Flags & terminal alerts refreshed');
+  try {
+    // RefreshTricycleFlags — auto-flag tricycles with 5+ reports in last 30 days
+    await db.query(`
+      UPDATE tricycles t
+      JOIN (
+        SELECT body_number, COUNT(*) AS cnt
+        FROM driver_reports
+        WHERE reported_at >= NOW() - INTERVAL 30 DAY
+        GROUP BY body_number
+      ) r ON t.body_number = r.body_number
+      SET t.report_count_30d = r.cnt,
+          t.flagged = (r.cnt >= 5)
+    `);
+
+    // RefreshTerminalAlerts — aggregate reports near each terminal in last 7 days
+    await db.query('DELETE FROM terminal_alerts');
+    await db.query(`
+      INSERT INTO terminal_alerts (terminal_id, report_count)
+      SELECT t.id,
+             COUNT(dr.id) AS report_count
+      FROM terminals t
+      LEFT JOIN driver_reports dr
+        ON ST_Distance_Sphere(
+             POINT(dr.origin_lng, dr.origin_lat),
+             POINT(t.lng, t.lat)
+           ) <= t.radius_m
+        AND dr.reported_at >= NOW() - INTERVAL 7 DAY
+      GROUP BY t.id
+    `);
+
+    console.log('[CRON] Flags & terminal alerts refreshed');
+  } catch (err) {
+    console.error('[CRON] Refresh failed:', err.message);
+  }
 });
 
 // ─── Start server ─────────────────────────────────────────

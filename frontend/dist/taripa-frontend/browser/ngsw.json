@@ -1,0 +1,137 @@
+{
+  "configVersion": 1,
+  "timestamp": 1774397881920,
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/chunk-2CCCKFOI.js",
+        "/chunk-6AIOATFW.js",
+        "/chunk-CLKRWCJW.js",
+        "/chunk-EYKXXCPM.js",
+        "/chunk-GLRNOX34.js",
+        "/chunk-HRNHLAVK.js",
+        "/chunk-IMLZ73NP.js",
+        "/chunk-IMPBB4AK.js",
+        "/chunk-LGFMJRZR.js",
+        "/chunk-QLHUMRCH.js",
+        "/chunk-RUSNAATU.js",
+        "/chunk-T7RSHL6H.js",
+        "/chunk-U4LYMYNV.js",
+        "/chunk-U5H6DM7S.js",
+        "/chunk-YHE5IFEY.js",
+        "/chunk-YTNE65T4.js",
+        "/index.html",
+        "/main-G62TR2SU.js",
+        "/manifest.webmanifest",
+        "/styles-FC6H7EKL.css"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/assets/fare-matrix.jpg",
+        "/assets/hero/hero-bg.jpg",
+        "/assets/icons/icon-128x128.png",
+        "/assets/icons/icon-144x144.png",
+        "/assets/icons/icon-192x192.png",
+        "/assets/icons/icon-512x512.png",
+        "/assets/icons/icon-72x72.png",
+        "/assets/icons/icon-96x96.png"
+      ],
+      "patterns": []
+    }
+  ],
+  "dataGroups": [
+    {
+      "name": "fare-ordinance",
+      "patterns": [
+        "\\/api\\/fare\\/ordinance",
+        "\\/api\\/fare\\/terminals"
+      ],
+      "strategy": "freshness",
+      "maxSize": 10,
+      "maxAge": 259200000,
+      "timeoutMs": 10000,
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "version": 1
+    },
+    {
+      "name": "driver-lookup",
+      "patterns": [
+        "\\/api\\/drivers\\/.*"
+      ],
+      "strategy": "freshness",
+      "maxSize": 50,
+      "maxAge": 3600000,
+      "timeoutMs": 5000,
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "version": 1
+    }
+  ],
+  "hashTable": {
+    "/assets/fare-matrix.jpg": "233e1d90b99ec314419def4223badc4c603915a0",
+    "/assets/hero/hero-bg.jpg": "a498749f3513669661875348eb063b036af7b84e",
+    "/assets/icons/icon-128x128.png": "c7be84f57418e487bb6dced05a72a2f83d8e8eca",
+    "/assets/icons/icon-144x144.png": "816b94c7e22bf57015da9cad976df1c6428a002f",
+    "/assets/icons/icon-192x192.png": "0bc6cadff2087fce8d1a9161e8c7daf595bfe2b4",
+    "/assets/icons/icon-512x512.png": "28fda29d97f217216af90f8985877ef897b7f9f8",
+    "/assets/icons/icon-72x72.png": "be2166cfea49181d6ca5955b1dd323d970148b1b",
+    "/assets/icons/icon-96x96.png": "8f889add8a1131b8f9f89ff87cb60a81e96ff414",
+    "/chunk-2CCCKFOI.js": "6b08ffc59e47c0b3623a7a2977df4b99e2442340",
+    "/chunk-6AIOATFW.js": "afe77a006aa0f4ac4c0d6b897a7abeb75836d241",
+    "/chunk-CLKRWCJW.js": "5379fbc38064c9ac45a63a6d62711eb2eec88246",
+    "/chunk-EYKXXCPM.js": "f68d27d4574d0bfa7d01fe62d82ed8513b37be59",
+    "/chunk-GLRNOX34.js": "1e0e9910279f4a3b1bbc9b850ec998c9cc9054df",
+    "/chunk-HRNHLAVK.js": "0265a63ce6806676b4791b5be8dbfe9d77461b7f",
+    "/chunk-IMLZ73NP.js": "3141f3429efe432fa79676ad6a26aa77c587bd37",
+    "/chunk-IMPBB4AK.js": "b808d1bcf32ded8ed458df18979c861687d0ccb3",
+    "/chunk-LGFMJRZR.js": "6e1f36eddc66a0c60eb5da25fa22fff3998c95e0",
+    "/chunk-QLHUMRCH.js": "ce49cba8410a6a2020b4fcbb4c1bc7d7c272d20b",
+    "/chunk-RUSNAATU.js": "23d09fe4e2f2070092d2e3d78b068f94bcd80169",
+    "/chunk-T7RSHL6H.js": "174ee5607730ed74f55a5492eaad67c524d42c18",
+    "/chunk-U4LYMYNV.js": "a23cf50e8acca47027821010352ae3e3bc5ce599",
+    "/chunk-U5H6DM7S.js": "b0a602e4e5ee8c32c921e2220eab290e72d24798",
+    "/chunk-YHE5IFEY.js": "c08b37768b0ad79d16408ff24e30c82da5b1855c",
+    "/chunk-YTNE65T4.js": "0260e17e5e1f410e362121660eee71bfc16d8ac3",
+    "/index.html": "e1b25380e404c9d2c252d77336d33e9fe4a5164c",
+    "/main-G62TR2SU.js": "bdcb722cba466cdb03fb635d23ff1d86b21f6b2d",
+    "/manifest.webmanifest": "e8f5a9d704f5b5a360696714aa57dd6e6878f57a",
+    "/styles-FC6H7EKL.css": "0cada4eccfe6acc0c61bf351f07cd7692d87c8c9"
+  },
+  "navigationUrls": [
+    {
+      "positive": true,
+      "regex": "^\\/.*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*\\.[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*\\/.*$"
+    }
+  ],
+  "navigationRequestStrategy": "performance"
+}
