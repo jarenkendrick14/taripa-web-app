@@ -17,6 +17,7 @@ const routeRoutes  = require('./routes/route.routes');
 const configRoutes = require('./routes/config.routes');
 const adminRoutes  = require('./routes/admin.routes');
 const ptroService  = require('./services/ptro.service');
+const { refreshAllTricycleFlags } = require('./services/tricycle-flags.service');
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
@@ -88,18 +89,7 @@ cron.schedule('59 23 * * 0', async () => {
 // Note: Inline SQL used instead of stored procedures (Railway MySQL doesn't support DELIMITER syntax)
 cron.schedule('0 * * * *', async () => {
   try {
-    // RefreshTricycleFlags — auto-flag tricycles with 5+ reports in last 30 days
-    await db.query(`
-      UPDATE tricycles t
-      JOIN (
-        SELECT body_number, COUNT(*) AS cnt
-        FROM driver_reports
-        WHERE reported_at >= NOW() - INTERVAL 30 DAY
-        GROUP BY body_number
-      ) r ON t.body_number = r.body_number
-      SET t.report_count_30d = r.cnt,
-          t.flagged = (r.cnt >= 5)
-    `);
+    await refreshAllTricycleFlags();
 
     // RefreshTerminalAlerts — aggregate reports near each terminal in last 7 days
     await db.query('DELETE FROM terminal_alerts');

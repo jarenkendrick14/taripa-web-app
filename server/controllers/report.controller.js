@@ -1,4 +1,5 @@
 const db = require('../config/db');
+const { refreshTricycleFlag } = require('../services/tricycle-flags.service');
 
 const GPS_VALIDATION_RADIUS_M = 500; // User must be within 500m of origin to validate report
 
@@ -79,8 +80,11 @@ exports.submitReport = async (req, res, next) => {
       ]
     );
 
-    // Refresh flags immediately
-    await db.query('CALL RefreshTricycleFlags()');
+    try {
+      await refreshTricycleFlag(body_number.trim().toUpperCase());
+    } catch (refreshErr) {
+      console.error('[REPORT SUBMIT] Failed to refresh tricycle flag:', refreshErr.message);
+    }
 
     res.status(201).json({
       report_id:    result.insertId,

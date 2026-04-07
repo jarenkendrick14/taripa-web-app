@@ -1,4 +1,5 @@
 const db = require('../config/db');
+const { refreshAllTricycleFlags } = require('../services/tricycle-flags.service');
 
 // GET /api/admin/stats
 exports.getStats = async (req, res, next) => {
@@ -69,18 +70,7 @@ exports.updateReportStatus = async (req, res, next) => {
       return res.status(400).json({ error: 'Invalid status.' });
     }
     await db.query('UPDATE driver_reports SET status = ? WHERE id = ?', [status, req.params.id]);
-    // Inline equivalent of RefreshTricycleFlags() — stored procedures not supported on Railway
-    await db.query(`
-      UPDATE tricycles t
-      JOIN (
-        SELECT body_number, COUNT(*) AS cnt
-        FROM driver_reports
-        WHERE reported_at >= NOW() - INTERVAL 30 DAY
-        GROUP BY body_number
-      ) r ON t.body_number = r.body_number
-      SET t.report_count_30d = r.cnt,
-          t.flagged = (r.cnt >= 5)
-    `);
+    await refreshAllTricycleFlags();
     res.json({ message: 'Status updated.' });
   } catch (err) { next(err); }
 };

@@ -1,0 +1,8 @@
+[phases.build]
+cmds = [
+  "npm ci",
+  "npm run build"
+]
+
+[staticAssets]
+src = "dist/taripa-web-app/browser"
